@@ -14,8 +14,7 @@ import com.jme3.system.AppSettings;
  * 
  * I have put this class in the package nz.ac.otago.oosg. Which might be too long
  * or others may suggest a better one.
- * 
- * @author tim
+ *
  */
 public class Game extends SimpleApplication {
 
@@ -24,10 +23,10 @@ public class Game extends SimpleApplication {
         //Custom settings to 'brand' the game launcher
         AppSettings settings = new AppSettings(true);
         settings.setTitle("Otago Open Source Game");
-        settings.setSettingsDialogImage("Interface/oosgsplash.png"); //temp
+        settings.setSettingsDialogImage("Interface/oosgsplash.png"); //temp image
         settings.setResolution(800, 600);
         
-        Game app = new Game(); //create instance of this class
+        Game app = new Game(); //create instance of this Game class
         app.setSettings(settings); //apply the settings above
         app.start();
     }
@@ -45,8 +44,12 @@ public class Game extends SimpleApplication {
         Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
         mat.setColor("Color", ColorRGBA.Green);
         geom.setMaterial(mat);
-
+        
+        //attach the 'box' tot the root node of the scene.
         rootNode.attachChild(geom);
+        
+        //WASD and mouse movement is already bound to the camera by default but
+        //might need to be overridden for the space game for third person view
     }
     
     /**
