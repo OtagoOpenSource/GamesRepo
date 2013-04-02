@@ -10,25 +10,46 @@ import com.jme3.scene.Mesh;
  * using the physics control to handle this. But it might be good to have our own to
  * try out first.
  * 
+ * Created by Tim Sullivan.
+ * Modified by Kevin Weatherall.
+ * 
  */
 public class Planet extends Geometry {
-    private float mass;
-    //stores the magnitude of the acceleration for direction.
-    private Vector3f acceleration;
+    // current position of the planet
+    public Vector3f position;
+    // size of the planet; used for determining mass
+    private float size;        
+    // current velocity of planet
+    private Vector3f velocity = Vector3f.ZERO;
     
-    public Planet (String name, Mesh mesh, float mass){
+    public Planet(String name, Mesh mesh, float size, Vector3f position) {
         super(name, mesh);
-        this.mass = mass;
-        //acceleration defaults to a newly created vector at 0.
-        this.acceleration = new Vector3f(Vector3f.ZERO);
+        this.size = size;
+        this.position = position;
     }
     
-    public float getMass(){
-        return mass;
+    /* Move the geometry to the position of the planet. */
+    public void move() {
+        position = position.add(velocity);
+        setLocalTranslation(position);
     }
     
-    public void setMass(float mass){
-        this.mass = mass;
+    /* Returns the size of the planet */
+    public float getSize() {
+        return size;
+    }
+    
+    /* Get the mass of the planet. */
+    public float getMass() {
+        return size * 30;
+    }
+    
+    /* Add specified acceleration to velocity. */
+    public void accelerate(Vector3f acc) {
+        /* Multiplier (.001f) scales the speed of the planets.
+         * Used to keep planets from shooting off screen straight away.
+         */
+        this.velocity = this.velocity.add(acc.mult(.000005f));
     }
     
     /**
@@ -38,8 +59,7 @@ public class Planet extends Geometry {
     @Override
     public String toString(){
         return "Planet at "+ this.getLocalTranslation() + 
-                " Mass: " + this.mass +
-                " Acceleration: " + this.acceleration;
+                " Mass: " + this.getMass();
     }
     
 }
