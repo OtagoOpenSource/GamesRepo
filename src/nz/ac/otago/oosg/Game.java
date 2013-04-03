@@ -60,16 +60,9 @@ public class Game extends SimpleApplication {
         rootNode.attachChild(worker);
         
         // add the first planet
-        RigidBodyControl con1 = worker.addPlanet("FirstPlanet", 20f, Vector3f.ZERO);
-        con1.setLinearVelocity(new Vector3f(0, 0, 0));
-        con1.setPhysicsLocation(new Vector3f(30, 0, -20));
-        addPlanetBody(con1);
-                        
-        RigidBodyControl con = worker.addPlanet();
-        con.setLinearVelocity(new Vector3f(0, 0, 0));
-        con.setPhysicsLocation(new Vector3f(30, 0, -20));
-        addPlanetBody(con);
+        addPlanetBody(worker.addPlanet("FirstPlanet", 2f, Vector3f.ZERO));
         
+        // uncomment to start with more planets
         /*for (int i = 0; i < 300; i++)
             addPlanetBody(worker.addPlanet());*/
             
