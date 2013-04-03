@@ -1,6 +1,8 @@
 package nz.ac.otago.oosg;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.MouseButtonTrigger;
@@ -40,6 +42,8 @@ public class Game extends SimpleApplication {
         app.start();
     }
 
+    BulletAppState bulletAppState;
+    
     /**
      * This method is called first when the game starts. It gives us the change
      * to initilise objects and add them to the scene in the game. It is only
@@ -47,13 +51,29 @@ public class Game extends SimpleApplication {
      */
     @Override
     public void simpleInitApp() {
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
+        bulletAppState.getPhysicsSpace().setGravity(Vector3f.ZERO);
+        
         // objects for handling planets
         worker = new PlanetWorker("worker", assetManager);
         rootNode.attachChild(worker);
         
         // add the first planet
-        worker.addPlanet("FirstPlanet", 2f, Vector3f.ZERO);
+        RigidBodyControl con1 = worker.addPlanet("FirstPlanet", 20f, Vector3f.ZERO);
+        con1.setLinearVelocity(new Vector3f(0, 0, 0));
+        con1.setPhysicsLocation(new Vector3f(30, 0, -20));
+        addPlanetBody(con1);
                         
+        RigidBodyControl con = worker.addPlanet();
+        con.setLinearVelocity(new Vector3f(0, 0, 0));
+        con.setPhysicsLocation(new Vector3f(30, 0, -20));
+        addPlanetBody(con);
+        
+        /*for (int i = 0; i < 300; i++)
+            addPlanetBody(worker.addPlanet());*/
+            
+        
         //create some weak light for everything.
         AmbientLight light = new AmbientLight();
         rootNode.addLight(light);
@@ -78,6 +98,8 @@ public class Game extends SimpleApplication {
      */
     @Override
     public void simpleUpdate(float tpf) {
+        super.simpleUpdate(tpf);
+        
         worker.update(tpf);
     }
 
@@ -86,6 +108,10 @@ public class Game extends SimpleApplication {
         //TODO: add render code
     }
 
+    private void addPlanetBody(RigidBodyControl control) {       
+        bulletAppState.getPhysicsSpace().add(control); 
+    }
+    
     /**
      * Sets up key bindings to listerners to handle mouse and keyboard events.
      */
@@ -95,7 +121,7 @@ public class Game extends SimpleApplication {
                 if (name.equals("NewPlanet") && !isPressed) {
                     //add another planet randomly
                     System.out.println("Adding planet to scene.");
-                    worker.addPlanet();
+                    addPlanetBody(worker.addPlanet());
                 }
             }
         };

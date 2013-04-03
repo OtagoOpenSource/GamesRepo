@@ -1,5 +1,6 @@
 
 package nz.ac.otago.oosg;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -22,10 +23,16 @@ public class Planet extends Geometry {
     // current velocity of planet
     private Vector3f velocity = Vector3f.ZERO;
     
+    public RigidBodyControl control;
+    
     public Planet(String name, Mesh mesh, float size, Vector3f position) {
         super(name, mesh);
         this.size = size;
         this.position = position;
+        
+        control = new RigidBodyControl(getMass());
+        addControl(control);
+        control.setPhysicsLocation(position);
     }
     
     /* Move the geometry to the position of the planet. */
@@ -41,7 +48,7 @@ public class Planet extends Geometry {
     
     /* Get the mass of the planet. */
     public float getMass() {
-        return size * 30;
+        return size * 300;
     }
     
     /* Add specified acceleration to velocity. */
@@ -49,7 +56,8 @@ public class Planet extends Geometry {
         /* Multiplier (.001f) scales the speed of the planets.
          * Used to keep planets from shooting off screen straight away.
          */
-        this.velocity = this.velocity.add(acc.mult(.000005f));
+        this.velocity = this.velocity.add(acc.mult(0.5f));        
+        control.setLinearVelocity(velocity);
     }
     
     /**
