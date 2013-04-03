@@ -1,6 +1,7 @@
 package nz.ac.otago.oosg;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -34,7 +35,7 @@ public class PlanetWorker extends Node {
     /**
      * Creates a planet, assignes material, mass, size and adds it to the scene.
      */
-    public void addPlanet(String name, float size, Vector3f position) {        
+    public RigidBodyControl addPlanet(String name, float size, Vector3f position) {        
         //create the mesh that represents the planet.
         Sphere newPlanetMesh = new Sphere(20, 30, size); //create a sphere mesh
         //create the planet, give it a name, mesh, mass. acceleration is set to 000.
@@ -53,15 +54,17 @@ public class PlanetWorker extends Node {
         planets.add(newPlanet);        
         attachChild(newPlanet);
         System.out.println(newPlanet);
+        
+        return newPlanet.control;
     }
 
     /* Add a completely random planet. */
-    public void addPlanet() {  
-        addPlanet("planet" + planets.size(), new Random().nextFloat() / .8f + .2f);
+    public RigidBodyControl addPlanet() {  
+        return addPlanet("planet" + planets.size(), new Random().nextFloat() / .8f + .2f);
     }
     
     /* Add a planet the chosen name and size. */
-    public void addPlanet(String name, float size) {
+    public RigidBodyControl addPlanet(String name, float size) {
         Random rand = new Random();
         
         Vector3f position = new Vector3f(
@@ -70,19 +73,19 @@ public class PlanetWorker extends Node {
                 ((rand.nextFloat() * 2) - 1) * 50
                 );
         
-        addPlanet(name, size, position);
+        return addPlanet(name, size, position);
     }
     
     /* 
      * Gravity simulation. Code originally created by Ben Knowles.
      */
-    private void simGrav(Planet p) {
+    private void simGrav(Planet p, float tpf) {
         if (planets.size() <= 1) {
             return;
         }
         
         /* Stores the net acceleration while it is being calculated */
-            Vector3f acc = new Vector3f();
+            Vector3f acc = Vector3f.ZERO;
 
             // add acceleration for each planet
             for (Planet p2 : planets) {
@@ -96,7 +99,7 @@ public class PlanetWorker extends Node {
                         (p.position.x + p.getSize() / 2) - p2.position.x + (p2.getSize() / 2),
                         (p.position.y + p.getSize() / 2) - p2.position.y + (p2.getSize() / 2),
                         (p.position.z + p.getSize() / 2) - p2.position.z + (p2.getSize() / 2));
-
+                
                 double denom = Math.pow(dis.x, 2) + Math.pow(dis.y, 2) + Math.pow(dis.z, 2);//Our denominator for calculating acceleration
 
                 float magAcc = (float) (p2.getMass() / denom);//The magnitude of acceleration
@@ -112,7 +115,7 @@ public class PlanetWorker extends Node {
                 acc = acc.subtract(unit.mult(magAcc));
             }
 
-            p.accelerate(acc);//changes velocity by t
+            p.accelerate(acc.mult(0.5f * tpf));//changes velocity by t
     }
     
     /* 
@@ -121,12 +124,12 @@ public class PlanetWorker extends Node {
     public void update(float tpf) {
         // work out acceleration for each planet
         for (Planet p : planets) {
-            simGrav(p);            
+            simGrav(p, tpf);            
         }
 
         // move each planet
-        for (Planet p : planets) {
+        /*for (Planet p : planets) {
             p.move();
-        }
+        }*/
     }
 }
