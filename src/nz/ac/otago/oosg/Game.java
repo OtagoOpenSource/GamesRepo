@@ -52,8 +52,11 @@ public class Game extends SimpleApplication {
         rootNode.attachChild(worker);
         
         // add the first planet
-        worker.addPlanet("FirstPlanet", 2f, Vector3f.ZERO);
-                        
+        worker.addPlanet("Sun", 2f, 100f, Vector3f.ZERO, Vector3f.ZERO, ColorRGBA.Orange);
+        worker.addPlanet("Planet1", 1f, 0f, new Vector3f(10f,0f,-10f), new Vector3f(-10f,0f,-10f),ColorRGBA.Blue);
+        worker.addPlanet("Planet2", 1f, 0f, new Vector3f(0f,40f,0f), new Vector3f(0f,0f,-8f),ColorRGBA.Red);
+        worker.addPlanet("Planet3", 1f, 0f, new Vector3f(20f,0f,-20f), new Vector3f(-10f,0f,-10f),ColorRGBA.Yellow);
+        
         //create some weak light for everything.
         AmbientLight light = new AmbientLight();
         rootNode.addLight(light);
@@ -61,7 +64,7 @@ public class Game extends SimpleApplication {
         //light to represent the 'sun'
         DirectionalLight light2 = new DirectionalLight();
         light2.setDirection(new Vector3f(-0.5f, 0, -0.5f));
-        light2.setColor(ColorRGBA.Orange);
+        light2.setColor(ColorRGBA.White);
         rootNode.addLight(light2);
 
         // map button presses
@@ -94,8 +97,8 @@ public class Game extends SimpleApplication {
             public void onAction(String name, boolean isPressed, float tpf) {
                 if (name.equals("NewPlanet") && !isPressed) {
                     //add another planet randomly
-                    System.out.println("Adding planet to scene.");
-                    worker.addPlanet();
+                    //System.out.println("Adding planet to scene.");
+                    //worker.addPlanet();
                 }
             }
         };

@@ -21,16 +21,21 @@ public class Planet extends Geometry {
     private float size;        
     // current velocity of planet
     private Vector3f velocity = Vector3f.ZERO;
+    // mass of planet
+    private float mass;
+    public static final float dt = 1;
     
-    public Planet(String name, Mesh mesh, float size, Vector3f position) {
+    public Planet(String name, Mesh mesh, float size, float mass, 
+                  Vector3f position, Vector3f velocity) {
         super(name, mesh);
         this.size = size;
+        this.mass = mass;
         this.position = position;
+        this.velocity = velocity;
     }
     
     /* Move the geometry to the position of the planet. */
     public void move() {
-        position = position.add(velocity);
         setLocalTranslation(position);
     }
     
@@ -41,15 +46,16 @@ public class Planet extends Geometry {
     
     /* Get the mass of the planet. */
     public float getMass() {
-        return size * 30;
+        return mass;
     }
     
     /* Add specified acceleration to velocity. */
-    public void accelerate(Vector3f acc) {
+    public void updatePos(Vector3f acc, float dt) {
         /* Multiplier (.001f) scales the speed of the planets.
          * Used to keep planets from shooting off screen straight away.
          */
-        this.velocity = this.velocity.add(acc.mult(.000005f));
+        this.velocity = this.velocity.add(acc.mult(0.5f*dt));
+        this.position = this.position.add(this.velocity.mult(dt));
     }
     
     /**
