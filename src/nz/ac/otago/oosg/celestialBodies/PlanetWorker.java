@@ -1,8 +1,8 @@
 package nz.ac.otago.oosg.celestialBodies;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -26,7 +26,7 @@ public class PlanetWorker extends Node {
     private ArrayList<Planet> planets = new ArrayList<Planet>();
     // used for loading textures
     private AssetManager assetManager;    
-    private static final float dt = 0.0005f;
+    private static final float dt = 0.00005f;
     private static final float G = 100;
 
     // the camera; used for updating planet text display
@@ -46,7 +46,7 @@ public class PlanetWorker extends Node {
     /**
      * Creates a planet, assignes material, mass, size and adds it to the scene.
      */
-    public void addPlanet(String name, float size, float mass,
+    public RigidBodyControl addPlanet(String name, float size, float mass,
             Vector3f position, Vector3f velocity, ColorRGBA colour) {
         //create the mesh that represents the planet.
         Sphere newPlanetMesh = new Sphere(20, 30, size); //create a sphere mesh
@@ -78,6 +78,8 @@ public class PlanetWorker extends Node {
         planets.add(newPlanet);
         attachChild(newPlanet);
         System.out.println(newPlanet);
+        
+        return newPlanet.getControl();
     }
     
     /* Updates the text of a planet with its current information and moves it to correct location */
@@ -89,12 +91,12 @@ public class PlanetWorker extends Node {
     }
 
     /* Add a completely random planet. */
-    public void addPlanet() {
-        addPlanet("planet" + planets.size(), new Random().nextFloat() / .8f + .2f, 0f);
+    public RigidBodyControl addPlanet() {
+        return addPlanet("planet" + planets.size(), new Random().nextFloat() / .8f + .2f, 0f);
     }
 
     /* Add a planet the chosen name and size. */
-    public void addPlanet(String name, float size, float mass) {
+    public RigidBodyControl addPlanet(String name, float size, float mass) {
         Random rand = new Random();
 
         Vector3f position = new Vector3f(
@@ -102,9 +104,17 @@ public class PlanetWorker extends Node {
                 ((rand.nextFloat() * 2) - 1) * 50,
                 ((rand.nextFloat() * 2) - 1) * 50);
 
-        addPlanet(name, size, mass, position, Vector3f.ZERO, ColorRGBA.randomColor());
+        return addPlanet(name, size, mass, position, Vector3f.ZERO, ColorRGBA.randomColor());
     }
 
+    public Planet getPlanet(int index) {
+        if (index < 0 || index >= planets.size()) {
+            return null;
+        }
+        
+        return planets.get(index);
+    }
+    
     /* 
      * Gravity simulation. Code originally created by Ben Knowles.
      */
@@ -155,6 +165,6 @@ public class PlanetWorker extends Node {
         for (Planet p : planets) {
             p.move();
             handlePlanetText(p);
-        }
+        }        
     }
 }

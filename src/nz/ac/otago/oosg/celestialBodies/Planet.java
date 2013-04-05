@@ -1,5 +1,6 @@
 package nz.ac.otago.oosg.celestialBodies;
 
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
@@ -35,6 +36,8 @@ public class Planet extends Geometry {
     // planet HUD
     private Node hud;
     
+    private RigidBodyControl control;
+    
     public Planet(String name, Mesh mesh, float size, float mass, 
                   Vector3f position, Vector3f velocity, BitmapFont bitmapFont) {
         super(name, mesh);
@@ -55,6 +58,14 @@ public class Planet extends Geometry {
         
         hud = new Node();
         hud.attachChild(text);
+        
+        control = new RigidBodyControl();
+        addControl(control);
+        control.setKinematic(true);
+    }
+    
+    public RigidBodyControl getControl() {
+        return control;
     }
     
     /* Sets the HUD text */
