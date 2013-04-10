@@ -1,4 +1,4 @@
-package objects;
+package nz.ac.otago.oosg.objects;
 
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Matrix4f;
@@ -24,7 +24,6 @@ import nz.ac.otago.oosg.celestialBodies.Planet;
  * 
  */
 
-
 public class Player extends Geometry {
     /* Positioning */
     // out rotation around the planet we are on
@@ -42,6 +41,8 @@ public class Player extends Geometry {
     private float jumpHeight = 0.5f;    
     private float jumpSpeed = 2.0f;
     
+    public static final float SIZE = 0.1f;
+    
     public Player(String name, Mesh mesh, Planet planet) {
         super(name, mesh);
         
@@ -58,7 +59,7 @@ public class Player extends Geometry {
         // update our location
         placePlayer();
     }
-    
+        
     /* Returns the X rotation matrix */
     private Matrix4f getXMatrix(float theta) {
         return new Matrix4f(
@@ -119,7 +120,7 @@ public class Player extends Geometry {
         // convert rotation matrix to position vector;
         // mult is for size of player and stops it from clipping with the planet
         Vector3f newPosition = planet.getLocalTranslation().add(
-                pos.toTranslationVector().mult(1.1f)
+                pos.toTranslationVector().mult(1 + SIZE)
                 );
         
         // change out position

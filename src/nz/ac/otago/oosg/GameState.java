@@ -26,7 +26,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import java.util.Random;
 import nz.ac.otago.oosg.celestialBodies.PlanetWorker;
-import objects.Player;
+import nz.ac.otago.oosg.objects.Player;
 
 /**
  * @author Kevin Weatherall
@@ -82,7 +82,7 @@ public class GameState extends AbstractAppState {
 
     /* Create a Player object for moving around a planet */
     private void setUpPlayer() {
-        Sphere p = new Sphere(32, 32, .1f);
+        Sphere p = new Sphere(32, 32, Player.SIZE);
         player = new Player("Player", p, worker.getPlanet(1));        
         
         Material mat = new Material(assetManager, 
@@ -145,6 +145,8 @@ public class GameState extends AbstractAppState {
                             ColorRGBA.Blue);
                 } else if (controlPlayer && name.equals("Jump")) {                    
                     player.jump();
+                } else if (name.equals("AttachCamera") && !isPressed) {
+                    controlPlayer = !controlPlayer;                            
                 }
             }
         };
@@ -165,11 +167,11 @@ public class GameState extends AbstractAppState {
         inputManager.addMapping("NewPlanet", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
         inputManager.addMapping("MoveForward", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addMapping("AttachCamera", new KeyTrigger(KeyInput.KEY_P));
         
-        inputManager.addListener(this.actionlistener, new String[]{"NewPlanet", "Jump"});
+        inputManager.addListener(this.actionlistener, new String[]{"NewPlanet", "Jump", "AttachCamera"});
         
         inputManager.addListener(this.analogListener, new String[] { "MoveForward" } );
-        
     }
     
     @Override
@@ -180,11 +182,12 @@ public class GameState extends AbstractAppState {
         player.placePlayer();
         
         if (controlPlayer) {
-            // fix camera to player
-            cam.setLocation(player.getLocalTranslation().add(cam.getDirection().mult(-2)));       
+            // fix camera to player;
+            // mult determines how far back the camera is
+            cam.setLocation(player.getLocalTranslation().add(cam.getDirection().mult(-1.5f + Player.SIZE * 2)));       
         }
         
         // update the player; only used for jumping at this point in time
-        player.update(tpf);        
+        player.update(tpf);    
     }
 }
