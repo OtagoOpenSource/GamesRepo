@@ -26,6 +26,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import java.util.Random;
 import nz.ac.otago.oosg.celestialBodies.PlanetWorker;
+import objects.Player;
 
 /**
  * @author Kevin Weatherall
@@ -43,11 +44,17 @@ public class GameState extends AbstractAppState {
     // for receiving input
     private InputManager inputManager;
 
+    // the camera
     private Camera cam;
     
+    // for physics
     private BulletAppState bulletAppState;
     
+    // the player
     private Player player;
+    
+    // if the camera is fixed to the player and if pressing keys move it
+    private boolean controlPlayer = false;
     
     public GameState(SimpleApplication app) {
         bulletAppState = new BulletAppState();
@@ -59,9 +66,9 @@ public class GameState extends AbstractAppState {
         inputManager = app.getInputManager();
         cam = app.getCamera();
         
-        // set camera move speed
+        // set camera move speed        
         app.getFlyByCamera().setMoveSpeed(50);
-        
+                
         // set up planets
         setUpInitialPlanets(app);
         // set up lights
@@ -73,6 +80,7 @@ public class GameState extends AbstractAppState {
         setUpPlayer();
     }
 
+    /* Create a Player object for moving around a planet */
     private void setUpPlayer() {
         Sphere p = new Sphere(32, 32, .1f);
         player = new Player("Player", p, worker.getPlanet(1));        
@@ -97,6 +105,7 @@ public class GameState extends AbstractAppState {
         addPlanetControl(worker.addPlanet("Planet3", 1f, 0f, new Vector3f(20f, 0f, -20f), new Vector3f(-10f, 0f, -10f), ColorRGBA.Yellow));
     }
     
+    /* Add a Planet to collision system */
     private void addPlanetControl(RigidBodyControl control) {
         bulletAppState.getPhysicsSpace().add(control);
     }
@@ -134,22 +143,20 @@ public class GameState extends AbstractAppState {
                             rand.nextFloat() * 20 - 10,
                             rand.nextFloat() * 20 - 10),
                             ColorRGBA.Blue);
-                } else if (name.equals("Jump")) {
-                    if (!player.isJumping()) {
-                        player.jump();
-                    }
+                } else if (controlPlayer && name.equals("Jump")) {                    
+                    player.jump();
                 }
             }
         };
 
+        // for moving character
         this.analogListener = new AnalogListener() {
             public void onAnalog(String name, float value, float tpf) {
-                if (name.equals("MoveForward")) {                    
-                    Vector3f v = cam.getDirection().mult(-0.001f);
-                    //v.y = 0;
-                    
-                    player.addRotation(v);
-                    
+                if (controlPlayer) {
+                    if (name.equals("MoveForward")) {                    
+                        Vector3f v = cam.getDirection().mult(-0.001f);                        
+                        player.addRotation(v);
+                    }
                 }
             }
         };
@@ -167,14 +174,17 @@ public class GameState extends AbstractAppState {
     
     @Override
     public void update(float tpf) {
+        // update planets
         worker.update(tpf);
+        // attach player to planet
         player.placePlayer();
         
-        Vector3f unit = cam.getDirection().divide(cam.getDirection().length());       
+        if (controlPlayer) {
+            // fix camera to player
+            cam.setLocation(player.getLocalTranslation().add(cam.getDirection().mult(-2)));       
+        }
         
-        cam.setLocation(player.getLocalTranslation().add(unit.mult(-2)));
-        
-        player.update(tpf);
-        
+        // update the player; only used for jumping at this point in time
+        player.update(tpf);        
     }
 }
