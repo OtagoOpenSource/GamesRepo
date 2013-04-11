@@ -27,8 +27,7 @@ public class PlanetWorker extends Node {
     private static final float G = 100;
 
     private boolean planetGuiEnabled = false;
-    private int planetsAdded = 0;
-    private ObjectLoader objectLoader;
+    private int planetsAdded = 0;    
     
     // the camera; used for updating planet text display
     Camera cam;
@@ -41,8 +40,7 @@ public class PlanetWorker extends Node {
         
         this.assetManager = assetManager;
         this.cam = cam;
-        this.guiNode = guiNode;       
-        this.objectLoader = new ObjectLoader(assetManager);
+        this.guiNode = guiNode;        
     }
 
     private BitmapFont getDefaultFont() {
@@ -60,7 +58,7 @@ public class PlanetWorker extends Node {
         // font for planet HUD text
         BitmapFont guiFont = getDefaultFont();
         
-        GameObject planetObject = objectLoader.getObject(planetType);
+        GameObject planetObject = ObjectLoader.getObject(planetType);
         if (planetObject == null) {
             System.err.println("Specified planet type '" + planetType + "' could not be found!");
             return null;
@@ -165,7 +163,7 @@ public class PlanetWorker extends Node {
 
         p.updatePos(acc, dt);//changes velocity by t
     }
-
+        
     /* 
      * Update planet velocities and move them
      */

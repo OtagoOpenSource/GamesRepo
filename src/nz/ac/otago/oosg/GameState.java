@@ -18,13 +18,13 @@ import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Sphere;
 import java.util.Random;
+import nz.ac.otago.oosg.gameObjects.GameObject;
+import nz.ac.otago.oosg.gameObjects.ObjectLoader;
 import nz.ac.otago.oosg.gameObjects.PlanetWorker;
 import nz.ac.otago.oosg.gameObjects.Player;
 
@@ -66,6 +66,9 @@ public class GameState extends AbstractAppState {
         inputManager = app.getInputManager();
         cam = app.getCamera();
         
+        // load object definitions
+        ObjectLoader.loadObjects(assetManager, null, false);
+        
         // set camera move speed        
         app.getFlyByCamera().setMoveSpeed(50);
                 
@@ -82,12 +85,17 @@ public class GameState extends AbstractAppState {
 
     /* Create a Player object for moving around a planet */
     private void setUpPlayer() {
-        Sphere p = new Sphere(32, 32, Player.SIZE);
+        /*Sphere p = new Sphere(32, 32, Player.SIZE);
         player = new Player("Player", p, worker.getPlanet(1));        
         
         Material mat = new Material(assetManager, 
                 "Common/MatDefs/Light/Lighting.j3md");
-        player.setMaterial(mat);        
+        player.setMaterial(mat);     */
+        
+        GameObject playerInfo = ObjectLoader.getObject("Player");
+        player = new Player("Player1", playerInfo.getMesh(), worker.getPlanet(1));
+        player.setMaterial(playerInfo.getMaterial());
+        
         rootNode.attachChild(player);        
         bulletAppState.getPhysicsSpace().add(player.getControl());
     }

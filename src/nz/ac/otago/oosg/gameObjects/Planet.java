@@ -110,11 +110,11 @@ public class Planet extends Geometry {
     
     /* Add specified acceleration to velocity. */
     public void updatePos(Vector3f acc, float dt) {
-        /* Multiplier (.001f) scales the speed of the planets.
+        /* position mult scales the speed of the planets.
          * Used to keep planets from shooting off screen straight away.
          */
         this.velocity = this.velocity.add(acc.mult(0.5f*dt));
-        this.position = this.position.add(this.velocity.mult(dt));
+        this.position = this.position.add(this.velocity.mult(1.0f * dt));
     }
         
     /**

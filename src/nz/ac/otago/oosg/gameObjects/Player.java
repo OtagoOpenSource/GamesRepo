@@ -5,7 +5,6 @@ import com.jme3.math.Matrix4f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
-import nz.ac.otago.oosg.gameObjects.Planet;
 
 /* 
  * The placement of the player is currently determined by rotating the player
