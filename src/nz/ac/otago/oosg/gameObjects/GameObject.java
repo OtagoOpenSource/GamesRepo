@@ -10,9 +10,8 @@ public class GameObject {
     /* Object information */
     private Mesh mesh;    
     private Material material = null;
-    private float size, mass;    
-    // name given to this type of object; used for HUD
-    private String objectType = null;    
+    private float size, mass;        
+    private String objectType = null; // name given to this type of object; used for HUD
     
     /* Creates a sphere object */
     public GameObject(int zSamples, int radialSamples, float radius,
@@ -20,7 +19,7 @@ public class GameObject {
         this( new Sphere(zSamples, radialSamples, radius), radius, mass );        
     }
     
-    /* Creates custom mesh */
+    /* Creates with custom mesh */
     public GameObject(Mesh mesh, float size, float mass) {
         this.mesh = mesh;
         this.size = size;

@@ -1,5 +1,6 @@
 package nz.ac.otago.oosg;
 
+import nz.ac.otago.oosg.states.GameState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.system.AppSettings;
 

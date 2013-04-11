@@ -1,14 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package nz.ac.otago.oosg;
+package nz.ac.otago.oosg.states;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -24,43 +18,34 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import java.util.Random;
 import nz.ac.otago.oosg.gameObjects.GameObject;
-import nz.ac.otago.oosg.gameObjects.ObjectLoader;
-import nz.ac.otago.oosg.gameObjects.PlanetWorker;
 import nz.ac.otago.oosg.gameObjects.Player;
+import nz.ac.otago.oosg.gameObjects.SolarSystem;
+import nz.ac.otago.oosg.support.ObjectLoader;
 
 /**
  * @author Kevin Weatherall
  */
 public class GameState extends AbstractAppState {
-    // for loading assets
-    private AssetManager assetManager;
-    // for handling planets
-    private PlanetWorker worker = null;
-    // root node for adding nodes to
+    /* Useful objects from main class */
+    private AssetManager assetManager;    
     private Node rootNode;
+    private InputManager inputManager;
+    private Camera cam;
+    
+    // for handling planets
+    private SolarSystem worker = null;
+    
     // for handling input
     private ActionListener actionlistener;
     private AnalogListener analogListener;
-    // for receiving input
-    private InputManager inputManager;
 
-    // the camera
-    private Camera cam;
-    
-    // for physics
-    private BulletAppState bulletAppState;
-    
-    // the player
-    private Player player;
-    
-    // if the camera is fixed to the player and if pressing keys move it
+    /* Player-related */
+    private Player player;    
+    // if we are in control of the player
     private boolean controlPlayer = false;
     
     public GameState(SimpleApplication app) {
-        bulletAppState = new BulletAppState();
-        app.getStateManager().attach(bulletAppState);
-        
-        // remember essential objects
+        /* Remember essential objects */
         assetManager = app.getAssetManager();
         rootNode = app.getRootNode();
         inputManager = app.getInputManager();
@@ -72,52 +57,29 @@ public class GameState extends AbstractAppState {
         // set camera move speed        
         app.getFlyByCamera().setMoveSpeed(50);
                 
-        // set up planets
-        setUpInitialPlanets(app);
-        // set up lights
-        setUpLights();
-        // map button presses
+        /* Set everything up */
+        setUpSolarSystem(app);
+        setUpLights();                
+        setUpPlayer();        
         initKeys();
-        
-        // set up the player
-        setUpPlayer();
     }
 
     /* Create a Player object for moving around a planet */
-    private void setUpPlayer() {
-        /*Sphere p = new Sphere(32, 32, Player.SIZE);
-        player = new Player("Player", p, worker.getPlanet(1));        
-        
-        Material mat = new Material(assetManager, 
-                "Common/MatDefs/Light/Lighting.j3md");
-        player.setMaterial(mat);     */
-        
+    private void setUpPlayer() {        
+        // get player info
         GameObject playerInfo = ObjectLoader.getObject("Player");
-        player = new Player("Player1", playerInfo.getMesh(), worker.getPlanet(1));
+        // create player
+        player = new Player("Player1", playerInfo.getMesh(), worker.getPlanet(0));        
         player.setMaterial(playerInfo.getMaterial());
-        
-        rootNode.attachChild(player);        
-        bulletAppState.getPhysicsSpace().add(player.getControl());
+        // add to scene
+        rootNode.attachChild(player);
     }
     
     /* Sets up the PlanetWorker object and adds first planets */
-    private void setUpInitialPlanets(SimpleApplication app) {
-        // handles planets
-        worker = new PlanetWorker("worker", assetManager, app.getGuiNode(), app.getCamera());
-        rootNode.attachChild(worker);
-        
-        // add the first planets        
-        addPlanetControl(worker.addPlanet("Sun", Vector3f.ZERO, Vector3f.ZERO));
-        addPlanetControl(worker.addPlanet("Earth", new Vector3f(10f, 0f, -10f), new Vector3f(-10f, 0f, -10f)));
-        addPlanetControl(worker.addPlanet("Venus", new Vector3f(0f, 40f, 0f), new Vector3f(0f, 0f, -8f)));
-        addPlanetControl(worker.addPlanet("Mars", new Vector3f(20f, 0f, -20f), new Vector3f(-10f, 0f, -10f)));
-    }
-    
-    /* Add a Planet to collision system */
-    private void addPlanetControl(RigidBodyControl control) {
-        if (control != null) {
-            bulletAppState.getPhysicsSpace().add(control);
-        }
+    private void setUpSolarSystem(SimpleApplication app) {        
+        worker = new SolarSystem("worker", app);
+        rootNode.attachChild(worker);        
+        worker.loadSolarSystem(null);        
     }
     
     /* Sets up the lights */
@@ -141,9 +103,8 @@ public class GameState extends AbstractAppState {
             public void onAction(String name, boolean isPressed, float tpf) {
                 if (name.equals("NewPlanet") && !isPressed) {
                     //add another planet randomly
-                    //System.out.println("Adding planet to scene.");
                     Random rand = new Random();
-                    worker.addPlanet("default",
+                    worker.addPlanet("Default",
                             new Vector3f(
                             rand.nextFloat() * 100 - 50,
                             rand.nextFloat() * 100 - 50,
@@ -168,7 +129,8 @@ public class GameState extends AbstractAppState {
             public void onAnalog(String name, float value, float tpf) {
                 if (controlPlayer) {
                     if (name.equals("MoveForward")) {                    
-                        Vector3f v = cam.getDirection().mult(-0.001f);                        
+                        Vector3f v = cam.getDirection().mult(-0.001f);
+                                                
                         player.addRotation(v);
                     }
                 }

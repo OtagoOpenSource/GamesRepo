@@ -1,13 +1,15 @@
-package nz.ac.otago.oosg.gameObjects;
+package nz.ac.otago.oosg.support;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.math.ColorRGBA;
 import java.util.HashMap;
+import nz.ac.otago.oosg.gameObjects.GameObject;
 
 public class ObjectLoader {
     // information for each object type
     private static HashMap<String, GameObject> objects = null;
             
+    // the last file we loaded; used to avoid reloading files that we don't want to reload
     private static String lastLoadedFile = null;
     
     /* Loads all the definitions for planet names; should be loaded
@@ -32,38 +34,53 @@ public class ObjectLoader {
         
         /* We should be loading this from a file!!! */
         
-        // Our planet definitionss
+        /* Steps to adding a new definition
+         * 1. Create a new GameObject
+         * 2. Give GameObject a material, e.g. ise createMaterial() method
+         * 3. Optional: Give definition a name for HUD text, e.g. Earth
+         * 4. Add GameObject to definitions list
+         */
+        
+        /* Planet definitions */
+        
+        // default planet
         GameObject def   = new GameObject(20, 30, 1f,   0);
-        GameObject earth = new GameObject(20, 30, 1f,   0);
-        GameObject sun   = new GameObject(20, 30, 2f, 100);
-        GameObject mars  = new GameObject(20, 30, 1f,   0);
-        GameObject venus = new GameObject(20, 30, 1f,   0);
-        
-        GameObject player = new GameObject(20, 30, 0.1f, 0);
-        
-        // materials for the definitions
         def.createMaterial(assetManager, ColorRGBA.White);
+        def.setObjectType("Default");
+        objects.put("default", def);
+        
+        // earth        
+        GameObject earth = new GameObject(20, 30, 1f,   0);        
         earth.createMaterial(assetManager, ColorRGBA.Blue);
-        sun.createMaterial(assetManager, ColorRGBA.Orange);
+        earth.setObjectType("Earth");
+        objects.put("earth", earth);
+        
+        // mars
+        GameObject mars  = new GameObject(20, 30, 1f,   0);
         mars.createMaterial(assetManager, ColorRGBA.Red);
+        mars.setObjectType("Mars");
+        objects.put("mars", mars);
+        
+        GameObject venus = new GameObject(20, 30, 1f,   0);
         venus.createMaterial(assetManager, 
                 new ColorRGBA(1.0f, 1.0f, 0.5f, 1.0f));    
-        player.createMaterial(assetManager, ColorRGBA.Cyan);
-        
-        // add type names so we can display them in the HUD
-        def.setObjectType("Default");
-        earth.setObjectType("Earth");
-        mars.setObjectType("Mars");
         venus.setObjectType("Venus");
-        sun.setObjectType("Sun");
-                
-        // add definitions to the hashmap; make sure names are lowercase!
-        objects.put("earth", earth);
-        objects.put("sun", sun);
-        objects.put("mars", mars);
         objects.put("venus", venus);
-        objects.put("default", def);
-        objects.put("player", player);
+      
+        /* Sun definitions */
+        
+        // default sun
+        GameObject defsun = new GameObject(20, 30, 2f, 100);
+        defsun.createMaterial(assetManager, ColorRGBA.Orange);
+        defsun.setObjectType("DefaultSun");
+        objects.put("defaultsun", defsun);
+
+        /* Player definition */
+        
+        // player
+        GameObject player = new GameObject(20, 30, 0.1f, 0);        
+        player.createMaterial(assetManager, ColorRGBA.Cyan);
+        objects.put("player", player);        
     }
     
     /* Get the GameObject associated with the name provided */
@@ -73,8 +90,10 @@ public class ObjectLoader {
             return null;
         }
         
+        // make sure we get the object, no matter what capitalisation has been used
         objectName = objectName.toLowerCase();
         
+        // if we don't have the desired definition, return nothing
         if (!objects.containsKey(objectName)) {
             return null;
         }
