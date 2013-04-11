@@ -25,8 +25,8 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import java.util.Random;
-import nz.ac.otago.oosg.celestialBodies.PlanetWorker;
-import nz.ac.otago.oosg.objects.Player;
+import nz.ac.otago.oosg.gameObjects.PlanetWorker;
+import nz.ac.otago.oosg.gameObjects.Player;
 
 /**
  * @author Kevin Weatherall
@@ -99,15 +99,17 @@ public class GameState extends AbstractAppState {
         rootNode.attachChild(worker);
         
         // add the first planets        
-        addPlanetControl(worker.addPlanet("Sun", 2f, 100f, Vector3f.ZERO, Vector3f.ZERO, ColorRGBA.Orange));
-        addPlanetControl(worker.addPlanet("Planet1", 1f, 0f, new Vector3f(10f, 0f, -10f), new Vector3f(-10f, 0f, -10f), ColorRGBA.Blue));
-        addPlanetControl(worker.addPlanet("Planet2", 1f, 0f, new Vector3f(0f, 40f, 0f), new Vector3f(0f, 0f, -8f), ColorRGBA.Red));
-        addPlanetControl(worker.addPlanet("Planet3", 1f, 0f, new Vector3f(20f, 0f, -20f), new Vector3f(-10f, 0f, -10f), ColorRGBA.Yellow));
+        addPlanetControl(worker.addPlanet("Sun", Vector3f.ZERO, Vector3f.ZERO));
+        addPlanetControl(worker.addPlanet("Earth", new Vector3f(10f, 0f, -10f), new Vector3f(-10f, 0f, -10f)));
+        addPlanetControl(worker.addPlanet("Venus", new Vector3f(0f, 40f, 0f), new Vector3f(0f, 0f, -8f)));
+        addPlanetControl(worker.addPlanet("Mars", new Vector3f(20f, 0f, -20f), new Vector3f(-10f, 0f, -10f)));
     }
     
     /* Add a Planet to collision system */
     private void addPlanetControl(RigidBodyControl control) {
-        bulletAppState.getPhysicsSpace().add(control);
+        if (control != null) {
+            bulletAppState.getPhysicsSpace().add(control);
+        }
     }
     
     /* Sets up the lights */
@@ -133,7 +135,7 @@ public class GameState extends AbstractAppState {
                     //add another planet randomly
                     //System.out.println("Adding planet to scene.");
                     Random rand = new Random();
-                    worker.addPlanet("p", 1, 0,
+                    worker.addPlanet("default",
                             new Vector3f(
                             rand.nextFloat() * 100 - 50,
                             rand.nextFloat() * 100 - 50,
@@ -141,12 +143,14 @@ public class GameState extends AbstractAppState {
                             new Vector3f(
                             rand.nextFloat() * 20 - 10,
                             rand.nextFloat() * 20 - 10,
-                            rand.nextFloat() * 20 - 10),
-                            ColorRGBA.Blue);
+                            rand.nextFloat() * 20 - 10)
+                            );
                 } else if (controlPlayer && name.equals("Jump")) {                    
                     player.jump();
                 } else if (name.equals("AttachCamera") && !isPressed) {
                     controlPlayer = !controlPlayer;                            
+                } else if (name.equals("TogglePlanetHud") && !isPressed) {
+                    worker.togglePlanetHud();
                 }
             }
         };
@@ -168,8 +172,9 @@ public class GameState extends AbstractAppState {
         inputManager.addMapping("MoveForward", new KeyTrigger(KeyInput.KEY_W));
         inputManager.addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
         inputManager.addMapping("AttachCamera", new KeyTrigger(KeyInput.KEY_P));
+        inputManager.addMapping("TogglePlanetHud", new KeyTrigger(KeyInput.KEY_O));
         
-        inputManager.addListener(this.actionlistener, new String[]{"NewPlanet", "Jump", "AttachCamera"});
+        inputManager.addListener(this.actionlistener, new String[]{"NewPlanet", "Jump", "AttachCamera", "TogglePlanetHud"});
         
         inputManager.addListener(this.analogListener, new String[] { "MoveForward" } );
     }
