@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+    <useStyles filename="nifty-default-styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+
+    <screen id="start" controller="nz.ac.otago.oosg.gui.GuiController" defaultFocusElement="playButton">
+        <!-- I want this [very wide] image to slide along the x axis to give panoramic effect -->
+        <layer width="100%" height="100%" id="background" backgroundImage="Interface/menu_background.jpg" childLayout="vertical">
+            <effect>
+                <onStartScreen name="fade" />
+            </effect>
+        </layer>
+        
+        <layer id="menu_content_layer" childLayout="vertical" >
+            <!-- foreground image title -->
+            <panel width="70%" height="30%" id="foreground_title_image" childLayout="vertical">
+                <image width="100%" height="100%" filename="Interface/codename_satellite_header.png" />
+            </panel>
+            <panel id="main_menu" width="20%" height="40%" backgroundColor="#001f" childLayout="vertical">
+                <text font="Interface/Fonts/skyfall.fnt"
+                      color="#0A0f"
+                      text="Main Menu"
+                      align="center"
+                      valign="center"/>
+                <panel height="5%" />
+                <control id="playButton" align="center" name="button" label="Play">
+                    <interact onClick="clickedPlayButton()"/>
+                </control>
+                
+                <panel height="5%" />
+                
+                <control id="settingsButton" align="center" name="button" label="Settings">
+                    <interact onClick="clickedSettingsButton()"/>
+                </control>
+                
+                <panel height="5%" />
+                
+                <control id="helpButton" align="center" name="button" label="Help">
+                    <interact onClick="clickedHelpButton()"/>
+                </control>
+                
+                <panel height="5%" />
+                
+                <control id="quitButton" align="center" name="button" label="Quit">
+                    <interact onClick="clickedQuitButton()"/>
+                </control>
+                
+            </panel>
+        </layer>
+    </screen>
+    
+    <screen id="settings_screen" controller="nz.ac.otago.oosg.gui.GuiController">
+        <layer id="settings_content_layer" backgroundColor="#111d" childLayout="vertical">
+            <panel id="settings_panel" childLayout="vertical">
+                <panel height="10%" />
+                <text font="Interface/Fonts/datacron.fnt"
+                      color="#500f"
+                      text="Settings"
+                      align="center"
+                      valign="center"/>
+                
+                <panel height="20%" />
+                
+                <control id="settingsBackButton" width="200px"
+                         align="center"
+                         name="button"
+                         label="Back to Main Menu">
+                    <interact onClick="clickedSettingsBackButton()"/>
+                </control>
+            </panel>
+        </layer>
+    </screen>
+    
+     <screen id="help_screen" controller="nz.ac.otago.oosg.gui.GuiController">
+        <layer id="settings_content_layer" backgroundColor="#111f" childLayout="vertical">
+            <panel id="help_panel" childLayout="vertical">
+                <panel height="10%" />
+                <text font="Interface/Fonts/datacron.fnt"
+                      color="#500f"
+                      align="center"
+                      text="Help"/>
+                <panel height="10%" />
+                <text font="Interface/Fonts/datacron.fnt"
+                      color="#666f"
+                      align="center"
+                      text="Something helpful should be here..."/>
+                <panel height="30%" />
+                <control id="helpBackButton" width="200px"
+                         name="button"
+                         align="center"
+                         label="Back to Main Menu">
+                    <interact onClick="clickedHelpBackButton()"/>
+                </control>
+            </panel>
+        </layer>
+    </screen>
+    
+    <screen id="end"></screen>
+</nifty>

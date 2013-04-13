@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package nz.ac.otago.oosg;
 
 import com.jme3.app.SimpleApplication;
@@ -24,6 +20,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
+import com.jme3.util.SkyFactory;
 import java.util.Random;
 import nz.ac.otago.oosg.celestialBodies.PlanetWorker;
 import nz.ac.otago.oosg.objects.Player;
@@ -75,6 +72,8 @@ public class GameState extends AbstractAppState {
         setUpLights();
         // map button presses
         initKeys();
+        //sky
+        setUpSky();
         
         // set up the player
         setUpPlayer();
@@ -103,6 +102,9 @@ public class GameState extends AbstractAppState {
         addPlanetControl(worker.addPlanet("Planet1", 1f, 0f, new Vector3f(10f, 0f, -10f), new Vector3f(-10f, 0f, -10f), ColorRGBA.Blue));
         addPlanetControl(worker.addPlanet("Planet2", 1f, 0f, new Vector3f(0f, 40f, 0f), new Vector3f(0f, 0f, -8f), ColorRGBA.Red));
         addPlanetControl(worker.addPlanet("Planet3", 1f, 0f, new Vector3f(20f, 0f, -20f), new Vector3f(-10f, 0f, -10f), ColorRGBA.Yellow));
+        
+        //add 'flare' particle effect around sun
+        rootNode.attachChild(assetManager.loadModel("Scenes/sunFlare.j3o"));
     }
     
     /* Add a Planet to collision system */
@@ -121,6 +123,13 @@ public class GameState extends AbstractAppState {
         light2.setDirection(new Vector3f(-0.5f, 0, -0.5f));
         light2.setColor(ColorRGBA.White);
         rootNode.addLight(light2);
+    }
+    /**
+     * Load a simple black skymap in the background.
+     */
+    private void setUpSky(){
+        rootNode.attachChild(SkyFactory.createSky(assetManager,
+                "Textures/blacktest.jpg", true));
     }
 
     /**
