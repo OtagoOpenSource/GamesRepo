@@ -1,0 +1,7 @@
+Material Sun Flare Material : Common/MatDefs/Misc/Particle.j3md {
+     MaterialParameters {
+        Texture : Textures/sunflare.jpg
+     }
+    AdditionalRenderState {
+    }
+}
