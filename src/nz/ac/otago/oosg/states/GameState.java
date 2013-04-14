@@ -16,6 +16,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
+import com.jme3.util.SkyFactory;
 import java.util.Random;
 import nz.ac.otago.oosg.gameObjects.GameObject;
 import nz.ac.otago.oosg.gameObjects.Player;
@@ -60,7 +61,8 @@ public class GameState extends AbstractAppState {
         /* Set everything up */
         setUpSolarSystem(app);
         setUpLights();                
-        setUpPlayer();        
+        setUpPlayer();    
+        setUpSky();
         initKeys();
     }
 
@@ -95,6 +97,14 @@ public class GameState extends AbstractAppState {
         rootNode.addLight(light2);
     }
 
+    /**
+     * Load a simple black skymap in the background.
+     */
+    private void setUpSky(){
+        rootNode.attachChild(SkyFactory.createSky(assetManager,
+                "Textures/blacktest.jpg", true));
+    }
+    
     /**
      * Sets up key bindings to listerners to handle mouse and keyboard events.
      */

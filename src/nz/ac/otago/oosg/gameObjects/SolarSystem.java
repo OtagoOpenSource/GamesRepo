@@ -54,7 +54,8 @@ public class SolarSystem extends Node {
         /* Create sun */
         GameObject sunObject = ObjectLoader.getObject("DefaultSun");
         if (sunObject != null) {
-            sun = new Sun("Sun", sunObject, Vector3f.ZERO, getDefaultFont());
+            sun = new Sun("Sun", sunObject, Vector3f.ZERO, getDefaultFont(),
+                    app.getRootNode(), assetManager);
             addObject(sun);
         }
     }

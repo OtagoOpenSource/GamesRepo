@@ -4,7 +4,7 @@ import com.jme3.app.SimpleApplication;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import nz.ac.otago.oosg.GameState;
+import nz.ac.otago.oosg.states.GameState;
 
 /**
  * Handles events triggered from the NiftyGUI.
