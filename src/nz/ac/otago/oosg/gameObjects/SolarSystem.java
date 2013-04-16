@@ -29,8 +29,7 @@ public class SolarSystem extends Node {
     Camera cam;
     
     /* Physics stuff - needs commented by someone who understands it!!! */
-    private static final float dt = 0.00005f;
-    private static final float G = 100;
+    private static final float G = 5;
 
     // TRUE if want to see each planet's HUD
     private boolean planetHudEnabled = false;
@@ -66,9 +65,9 @@ public class SolarSystem extends Node {
     public void loadSolarSystem(String file) {
         if (file == null) {
             // add the first planets
-            addPlanet("Earth", new Vector3f(10f, 0f, -10f), new Vector3f(-10f, 0f, -10f));
-            addPlanet("Venus", new Vector3f(0f, 40f, 0f), new Vector3f(0f, 0f, -8f));
-            addPlanet("Mars", new Vector3f(20f, 0f, -20f), new Vector3f(-10f, 0f, -10f));
+            addPlanet("Earth", new Vector3f(10f, 0f, -10f), new Vector3f(-0.45f, 0f, -0.45f));
+            addPlanet("Venus", new Vector3f(0f, 40f, 0f), new Vector3f(0f, 0f, -0.25f));
+            addPlanet("Mars", new Vector3f(20f, 0f, -20f), new Vector3f(-0.25f, 0f, -0.25f));
         }
     }
         
@@ -169,8 +168,10 @@ public class SolarSystem extends Node {
     
     /* 
      * Gravity simulation. Code originally created by Ben Knowles.
+     * 
+     * dt provides time since last frame update
      */
-    private void simGrav(Planet p) {
+    private void simGrav(Planet p, float dt) {
         // if there is no sun, there is no gravity
         if (sun == null) {
             return;
@@ -207,7 +208,7 @@ public class SolarSystem extends Node {
     public void update(float tpf) {
         // work out acceleration for each planet
         for (Planet p : planets) {
-            simGrav(p);
+            simGrav(p,tpf);
         }
 
         // move each planet
