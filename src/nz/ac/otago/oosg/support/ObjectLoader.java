@@ -70,7 +70,7 @@ public class ObjectLoader {
         /* Sun definitions */
         
         // default sun
-        GameObject defsun = new GameObject(20, 30, 2f, 100);
+        GameObject defsun = new GameObject(20, 30, 2f, 2);
         defsun.createMaterial(assetManager, ColorRGBA.Orange);
         defsun.setObjectType("DefaultSun");
         objects.put("defaultsun", defsun);

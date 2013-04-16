@@ -28,6 +28,8 @@ public class Game extends SimpleApplication {
         settings.setResolution(800, 600);
 
         Game app = new Game(); //create instance of this Game class
+        //settings.setFrameRate(120); //used to test game speed under different
+                                      //frame rates
         app.setSettings(settings); //apply the settings above
         app.start();
     }
