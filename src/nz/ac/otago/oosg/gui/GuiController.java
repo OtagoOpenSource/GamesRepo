@@ -50,7 +50,7 @@ public class GuiController implements ScreenController {
         app.getInputManager().setCursorVisible(false);
         
         //run the game now since the menu is closed
-        app.getStateManager().getState(GameState.class).setEnabled(true);
+        app.getStateManager().attach(new GameState(app));
         nifty.gotoScreen("end"); //empty gui screen
     }
 
@@ -88,7 +88,5 @@ public class GuiController implements ScreenController {
         System.out.println("GUI: Clicked Help Back Button");
         nifty.gotoScreen("start");
     }
-    
-    
     
 }
