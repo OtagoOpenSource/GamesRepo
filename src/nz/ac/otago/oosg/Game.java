@@ -3,18 +3,9 @@ package nz.ac.otago.oosg;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.system.AppSettings;
+import nz.ac.otago.oosg.states.GameState;
 import nz.ac.otago.oosg.states.MainMenuState;
 
-/**
- * Welcome to the Beginning of the Otago Open Source Game!
- *
- * I have put this class in the package nz.ac.otago.oosg. Which might be too
- * long or others may suggest a better one.
- *
- * Modified by Tim Sullivan. 
- * Added to by Kevin Weatherall
- *
- */
 public class Game extends SimpleApplication {
     public static void main(String[] args) {
         //Custom settings to 'brand' the game launcher
@@ -36,8 +27,18 @@ public class Game extends SimpleApplication {
      * called once.
      */
     @Override
-    public void simpleInitApp() {        
-        AbstractAppState startState = new MainMenuState(this);        
+    public void simpleInitApp() {            
+        boolean startWithMenu = false;
+        AbstractAppState startState;
+        
+        if (startWithMenu)
+        {
+            startState = new MainMenuState(this);
+        }
+        else
+        {
+            startState = new GameState(this);
+        }
         stateManager.attach(startState);
     }    
 }

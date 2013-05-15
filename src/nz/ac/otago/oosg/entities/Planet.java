@@ -9,7 +9,7 @@ public class Planet extends Celestial {
     public Planet(String name, Vector3f position, 
             AssetManager assetManager) {
         
-        this(name, position, .6f, 0, assetManager, ColorRGBA.Blue);
+        this(name, position, 1, 0, assetManager, ColorRGBA.Blue);
     }
     
     /* Create planet with specific position, size and mass */

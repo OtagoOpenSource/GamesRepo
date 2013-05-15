@@ -18,9 +18,6 @@ import com.jme3.util.SkyFactory;
 import java.util.Random;
 import nz.ac.otago.oosg.entities.Level;
 
-/**
- * @author Kevin Weatherall
- */
 public class GameState extends AbstractAppState {
     /* Useful objects from main class */
     private AssetManager assetManager;    
@@ -54,14 +51,8 @@ public class GameState extends AbstractAppState {
     
     /* Sets up the PlanetWorker object and adds first planets */
     private void setUpSolarSystem(SimpleApplication app) {        
-        level = new Level("worker", app);
-        rootNode.attachChild(level);
-        
-        // just for testing
-        for (int i = 0; i < 10; i++)
-        {
-            level.addPlanet();
-        }
+        level = new Level("level", app);
+        rootNode.attachChild(level);        
     }
     
     /* Sets up the lights */
