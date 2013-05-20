@@ -2,7 +2,8 @@ package nz.ac.otago.oosg.support;
 
 import com.jme3.math.Matrix4f;
 
-/* Class for math operations that we may need
+/* 
+ * Class for math operations that we may need
  */
 public class MathsOperations {
     /* Returns the X rotation matrix */
