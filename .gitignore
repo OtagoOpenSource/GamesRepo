@@ -1,3 +1,38 @@
+# =============== #
+# Unity generated #
+# =============== #
+Satellite/[Tt]emp/
+Satellite/[Oo]bj/
+Satellite/[Bb]uild
+Satellite/[Ll]ibrary/
+Satellite/sysinfo.txt
+ 
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+Satellite/[Ee]xported[Oo]bj/
+Satellite/.vs/
+/*.userprefs
+/*.csproj
+/*.pidb
+/*.suo
+/*.sln*
+/*.user
+/*.unityproj
+/*.booproj
+ 
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store*
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+[Tt]humbs.db
+
+
 #ignore unwanted files from the git repository
 
 #private user-specific settings should not be shared.
