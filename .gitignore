@@ -12,14 +12,14 @@ Satellite/sysinfo.txt
 # ===================================== #
 Satellite/[Ee]xported[Oo]bj/
 Satellite/.vs/
-/*.userprefs
-/*.csproj
-/*.pidb
-/*.suo
-/*.sln*
-/*.user
-/*.unityproj
-/*.booproj
+Satellite/*.userprefs
+Satellite/*.csproj
+Satellite/*.pidb
+Satellite/*.suo
+Satellite/*.sln*
+Satellite/*.user
+Satellite/*.unityproj
+Satellite/*.booproj
  
 # ============ #
 # OS generated #
