@@ -40,21 +40,28 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
 			m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 			m_OrigGroundCheckDistance = m_GroundCheckDistance;
+
+			Physics.gravity = new Vector3(-1,0,0)*9.81f;
 		}
 
 
 		public void Move(Vector3 move, bool crouch, bool jump)
 		{
-
+			//Vector3 newGravity = -transform.localPosition.normalized;
 			// convert the world relative moveInput vector into a local-relative
 			// turn amount and forward amount required to head in the desired
 			// direction.
 			if (move.magnitude > 1f) move.Normalize();
 			move = transform.InverseTransformDirection(move);
 			CheckGroundStatus();
+			//Debug.Log (m_GroundNormal.ToString ("F4"));
 			move = Vector3.ProjectOnPlane(move, m_GroundNormal);
+			//move = transform.*move;
+
 			m_TurnAmount = Mathf.Atan2(move.x, move.z);
 			m_ForwardAmount = move.z;
+			//Debug.Log (move.ToString ("F4"));
+			//Debug.Log (m_ForwardAmount);
 
 			ApplyExtraTurnRotation();
 
@@ -202,15 +209,33 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		void CheckGroundStatus()
 		{
 			RaycastHit hitInfo;
+			//Vector3 newGravity = -transform.localPosition.normalized;
+			//if (newGravity.magnitude < 1) {
+			Vector3	newGravity = Vector3.up;
+			//}
+			//Debug.Log (newGravity.ToString ("F4"));
+
+			Quaternion rot = Quaternion.FromToRotation (Vector3.up, newGravity);
 #if UNITY_EDITOR
+			Vector3 planetoidUp = rot*Vector3.up;
+			Vector3 planetoidDown = rot*Vector3.down;
+			//Vector3 planetoidUp = Vector3.up;
+			//Vector3 planetoidDown = Vector3.down;
+			
+
+
 			// helper to visualise the ground check ray in the scene view
-			Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * m_GroundCheckDistance));
+			//Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * m_GroundCheckDistance));
+			Debug.DrawLine(transform.position + (planetoidUp * 0.1f), transform.position + (planetoidUp * 0.1f) + (planetoidDown * m_GroundCheckDistance));
 #endif
 			// 0.1f is a small offset to start the ray from inside the character
 			// it is also good to note that the transform position in the sample assets is at the base of the character
-			if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hitInfo, m_GroundCheckDistance))
+			if (Physics.Raycast(transform.position + (planetoidUp * 0.1f), planetoidDown, out hitInfo, m_GroundCheckDistance))
 			{
+				//Vector3 newGravity = -transform.localPosition.normalized;
+				//m_GroundNormal = rot*hitInfo.normal;
 				m_GroundNormal = hitInfo.normal;
+				//m_GroundNormal = newGravity;
 				m_IsGrounded = true;
 				m_Animator.applyRootMotion = true;
 			}
