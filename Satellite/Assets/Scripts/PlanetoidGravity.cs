@@ -7,11 +7,11 @@ public class PlanetoidGravity : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		lastPosition = transform.localPosition;
+		//lastPosition = transform.localPosition;
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		//Rigidbody rb = GetComponent<Rigidbody>();
 		//Debug.Log (Physics.gravity.ToString ("F4"));
 		Vector3 newGravity = -transform.localPosition.normalized;
@@ -23,10 +23,10 @@ public class PlanetoidGravity : MonoBehaviour {
 		//diff.y = diff.y * 9.81f;
 		//diff.z = diff.z * 9.81f;
 		//Debug.Log (newGravity.ToString("F4"));
-		Physics.gravity = newGravity*9.81f;
+		//Physics.gravity = newGravity*9.81f;
 
 
-		lastPosition = transform.localPosition;
+		//lastPosition = transform.localPosition;
 
 	}
 }

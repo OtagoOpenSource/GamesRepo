@@ -28,7 +28,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		Vector3 m_CapsuleCenter;
 		CapsuleCollider m_Capsule;
 		bool m_Crouching;
-
+		//Vector3 gravityDirection = new Vector3(-1,0,0);
+		Vector3 gravityDirection = new Vector3(0,-1,0);
+		Quaternion rot;
+		Quaternion rot2;
 
 		void Start()
 		{
@@ -41,9 +44,16 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 			m_OrigGroundCheckDistance = m_GroundCheckDistance;
 
-			Physics.gravity = new Vector3(-1,0,0)*9.81f;
+			Physics.gravity = gravityDirection*9.81f;
+			rot = Quaternion.FromToRotation (Vector3.down, gravityDirection);
+			rot2 = Quaternion.FromToRotation (gravityDirection,Vector3.down);
 		}
 
+		void FixedUpdate() {
+			gravityDirection = -transform.localPosition.normalized;
+			rot = Quaternion.FromToRotation (Vector3.down, gravityDirection);
+			Physics.gravity = gravityDirection*9.81f;
+		}
 
 		public void Move(Vector3 move, bool crouch, bool jump)
 		{
@@ -58,10 +68,15 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			move = Vector3.ProjectOnPlane(move, m_GroundNormal);
 			//move = transform.*move;
 
+			Debug.Log ("Move:" + move.ToString("F4"));
+			Debug.Log ("Grav:" + (rot*Vector3.forward).ToString("F4"));
+
+			move = rot2*move;
 			m_TurnAmount = Mathf.Atan2(move.x, move.z);
+			//m_ForwardAmount = Vector3.Dot(move,rot*Vector3.forward);
 			m_ForwardAmount = move.z;
 			//Debug.Log (move.ToString ("F4"));
-			//Debug.Log (m_ForwardAmount);
+			Debug.Log ("MF:" + m_ForwardAmount);
 
 			ApplyExtraTurnRotation();
 
@@ -211,11 +226,11 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			RaycastHit hitInfo;
 			//Vector3 newGravity = -transform.localPosition.normalized;
 			//if (newGravity.magnitude < 1) {
-			Vector3	newGravity = Vector3.up;
+			//Vector3	newGravity = Vector3.up;
 			//}
 			//Debug.Log (newGravity.ToString ("F4"));
 
-			Quaternion rot = Quaternion.FromToRotation (Vector3.up, newGravity);
+
 #if UNITY_EDITOR
 			Vector3 planetoidUp = rot*Vector3.up;
 			Vector3 planetoidDown = rot*Vector3.down;
@@ -233,8 +248,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			if (Physics.Raycast(transform.position + (planetoidUp * 0.1f), planetoidDown, out hitInfo, m_GroundCheckDistance))
 			{
 				//Vector3 newGravity = -transform.localPosition.normalized;
-				//m_GroundNormal = rot*hitInfo.normal;
-				m_GroundNormal = hitInfo.normal;
+				m_GroundNormal = rot*hitInfo.normal;
+				//m_GroundNormal = hitInfo.normal;
 				//m_GroundNormal = newGravity;
 				m_IsGrounded = true;
 				m_Animator.applyRootMotion = true;
