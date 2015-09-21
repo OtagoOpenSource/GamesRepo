@@ -30,6 +30,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		bool m_Crouching;
 		//Vector3 gravityDirection = new Vector3(-1,0,0);
 		Vector3 gravityDirection;
+		Quaternion rot;
+		Quaternion rot2;
 
 		Vector3 planetoidUp;
 		Vector3 planetoidDown;
@@ -47,17 +49,22 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
 			//m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 			m_OrigGroundCheckDistance = m_GroundCheckDistance;
+
+			gravityDirection = -transform.localPosition.normalized;
+			rot  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
+			transform.rotation = rot;
 		}
 
 		void FixedUpdate() {
 
 			gravityDirection = -transform.localPosition.normalized;
-			transform.rotation = Quaternion.FromToRotation (Vector3.down, gravityDirection);
-
+			rot  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
+			//transform.rotation = rot;
+			//transform.Rotate (rot.eulerAngles,Space.World);
 			planetoidUp = -gravityDirection;
 			planetoidDown = gravityDirection;
-			planetoidForward = (transform.rotation * Vector3.forward).normalized;
-			planetoidRight = (transform.rotation * Vector3.right).normalized;
+			planetoidForward = (rot * Vector3.forward).normalized;
+			planetoidRight = (rot * Vector3.right).normalized;
 
 			planetoidVelocity.x = Vector3.Dot (m_Rigidbody.velocity,planetoidRight);
 			planetoidVelocity.y = Vector3.Dot (m_Rigidbody.velocity,planetoidForward);
@@ -83,7 +90,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			move = transform.InverseTransformDirection(move);
 			CheckGroundStatus();
 
-			move = transform.rotation*move;
+			move = rot*move;
 			move = Vector3.ProjectOnPlane(move, m_GroundNormal);
 
 			//move = transform.*move;
@@ -133,6 +140,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
 			// send input and other state parameters to the animator
 			UpdateAnimator(move);
+			transform.rotation = rot*rot2;
+			//if (m_TurnAmount > 0) {
+				Debug.Log ("Rot2:" + rot2.ToString ("F4"));
+			//}
 		}
 
 
@@ -246,8 +257,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
 			//transform.Rotate(0, m_TurnAmount * turnSpeed * Time.deltaTime, 0);
 			//Debug.Log ("turnSpeed:" + (m_TurnAmount * turnSpeed * Time.deltaTime));
-			transform.RotateAround (transform.position, planetoidUp, m_TurnAmount * turnSpeed * Time.deltaTime);
+			//transform.RotateAround (transform.position, planetoidUp, m_TurnAmount * turnSpeed * Time.deltaTime);
 			//transform.localRotation = Quaternion.FromToRotation(
+			rot2 = Quaternion.AngleAxis(m_TurnAmount * turnSpeed * Time.deltaTime, planetoidDown);
+
 		}
 
 
