@@ -45,7 +45,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         // Fixed update is called in sync with physics
         private void FixedUpdate()
         {
-			Vector3 newGravity = -transform.localPosition.normalized;
+			//Vector3 newGravity = -transform.localPosition.normalized;
 
             // read inputs
             float h = CrossPlatformInputManager.GetAxis("Horizontal");
@@ -56,19 +56,21 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             if (m_Cam != null)
             {
                 // calculate camera relative direction to move:
-                m_CamForward = Vector3.Scale(m_Cam.forward, new Vector3(1, 0, 1)).normalized;
+                //m_CamForward = Vector3.Scale(m_Cam.forward, new Vector3(1, 0, 1)).normalized;
 				//Debug.Log (m_CamForward.ToString ("F4"));
 				//m_CamForward = Quaternion.FromToRotation(Vector3.down, newGravity)*m_CamForward;
 				//Vector3 m_CamRight = Quaternion.FromToRotation(Vector3.down, newGravity)*m_Cam.right;
-                m_Move = v*m_CamForward + h*m_Cam.right;
-            }
+                //m_Move = v*m_CamForward + h*m_CamRight;
+				m_Move = v*m_Cam.forward + h*m_Cam.right;
+			}
             else
             {
-				Vector3 goforward = Quaternion.FromToRotation(Vector3.down, newGravity)*Vector3.forward;
-				Vector3 goright = Quaternion.FromToRotation(Vector3.down,newGravity)*Vector3.right;
+				//Vector3 goforward = Quaternion.FromToRotation(Vector3.down, newGravity)*Vector3.forward;
+				//Vector3 goright = Quaternion.FromToRotation(Vector3.down,newGravity)*Vector3.right;
                 // we use world-relative directions in the case of no main camera
-				m_Move = v*goforward + h*goright;
-            }
+				//m_Move = v*goforward + h*goright;
+				m_Move = v*Vector3.down+h*Vector3.right;
+			}
 #if !MOBILE_INPUT
 			// walk speed multiplier
 	        if (Input.GetKey(KeyCode.LeftShift)) m_Move *= 0.5f;
