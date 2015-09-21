@@ -47,7 +47,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
 			//m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 			m_OrigGroundCheckDistance = m_GroundCheckDistance;
-
 		}
 
 		void FixedUpdate() {
@@ -283,7 +282,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
 			//Debug.Log ("UP:" + Vector3.up.ToString ("F4"));
 			//Debug.Log ("DW:" + Vector3.down.ToString ("F4"));
-
 
 			//Vector3 planetoidUp = Vector3.up;
 			//Vector3 planetoidDown = Vector3.down;
