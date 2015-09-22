@@ -30,13 +30,12 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		bool m_Crouching;
 		//Vector3 gravityDirection = new Vector3(-1,0,0);
 		Vector3 gravityDirection;
-		Quaternion rot;
-		Quaternion rot2;
+		Quaternion gravityRotation;
 
-		Vector3 planetoidUp;
-		Vector3 planetoidDown;
-		Vector3 planetoidForward;
-		Vector3 planetoidRight;
+		Vector3 gravityUp;
+		Vector3 gravityDown;
+		Vector3 gravityForward;
+		Vector3 gravityRight;
 		Vector3 planetoidVelocity;
 
 		void Start()
@@ -46,149 +45,60 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			m_Capsule = GetComponent<CapsuleCollider>();
 			m_CapsuleHeight = m_Capsule.height;
 			m_CapsuleCenter = m_Capsule.center;
-
 			//m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 			m_OrigGroundCheckDistance = m_GroundCheckDistance;
-
-			gravityDirection = -transform.localPosition.normalized;
-			//rot  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
-			//transform.rotation = rot;
 		}
 
 		void FixedUpdate() {
 
 			gravityDirection = -transform.localPosition.normalized;
-			//gravityDirection = transform.position - GetComponentInParent<Transform> ().position;
-			//gravityDirection = gravityDirection.normalized;
+			gravityRotation  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
 
-			#if UNITY_EDITOR
-			//Debug.DrawLine(transform.position, transform.position - gravityDirection, Color.red);
-			//Debug.Log ("T:" + transform.position.ToString ("F4"));
-			//Debug.Log ("D:" + transform.TransformDirection(Vector3.down).ToString ("F4"));
-			//Debug.Log ("G:" + gravityDirection.ToString ("F4"));
-			//Debug.DrawLine(transform.position, transform.position + move * 5, Color.blue);
-			#endif
+			Vector3 characterDownWorld = transform.TransformDirection (Vector3.down);
+			transform.Rotate (Quaternion.FromToRotation(characterDownWorld, gravityDirection).eulerAngles, Space.World);
 
+			gravityUp = -gravityDirection;
+			gravityDown = gravityDirection;
+			gravityForward = (gravityRotation * Vector3.forward).normalized;
+			gravityRight = (gravityRotation * Vector3.right).normalized;
 
-			rot  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
+			planetoidVelocity.x = Vector3.Dot (m_Rigidbody.velocity,gravityRight);
+			planetoidVelocity.y = Vector3.Dot (m_Rigidbody.velocity,gravityForward);
+			planetoidVelocity.z = Vector3.Dot (m_Rigidbody.velocity,gravityUp);
 
-
-			Debug.Log("R:" + rot.eulerAngles.ToString ("F4"));
-
-
-			Quaternion rot3 = Quaternion.Inverse (transform.rotation)*rot;
-			//Vector3 angles = rot.eulerAngles - transform.rotation.eulerAngles;
-
-
-			transform.Rotate (Quaternion.FromToRotation(transform.TransformDirection(Vector3.down), gravityDirection).eulerAngles, Space.World);
-			//Debug.Log ("A:" + angles.ToString ("F4"));
-			//transform.Rotate (rot3.eulerAngles, Space.World);
-
-
-			//transform.rotation = rot;
-			//rot2 = new Quaternion (0f, 0f, 0f, 1f);
-
-			//Debug.Log ("G:" + gravityDirection.ToString("F4"));
-			//Debug.Log ("D:" + Vector3.down.ToString("F4"));
-			//Debug.Log ("R:" + rot.eulerAngles.ToString ("F4"));
-			//transform//trans
-
-
-			//transform.rotation = rot;
-			//transform.Rotate (rot.eulerAngles,Space.World);
-			planetoidUp = -gravityDirection;
-			planetoidDown = gravityDirection;
-			planetoidForward = (rot * Vector3.forward).normalized;
-			planetoidRight = (rot * Vector3.right).normalized;
-
-			planetoidVelocity.x = Vector3.Dot (m_Rigidbody.velocity,planetoidRight);
-			planetoidVelocity.y = Vector3.Dot (m_Rigidbody.velocity,planetoidForward);
-			planetoidVelocity.z = Vector3.Dot (m_Rigidbody.velocity,planetoidUp);
-
-			//rot = Quaternion.FromToRotation (Vector3.down, gravityDirection);
-			//Debug.Log ("UP:" + Vector3.up.ToString ("F4"));
-			//Vector3 z = rot * Vector3.up;
-			//Debug.Log ("z:" +z.ToString ("F4"));
 			Physics.gravity = gravityDirection*9.81f;
 		}
 
 		public void Move(Vector3 move, bool crouch, bool jump)
 		{
-		//Vector3 newGravity = -transform.localPosition.normalized;
-		// convert the world relative moveInput vector into a local-relative
-		// turn amount and forward amount required to head in the desired
-		// direction.
-		if (move.magnitude > 1f)
-			move.Normalize ();
+			if (move.magnitude > 1f)
+				move.Normalize ();
 
+			move = transform.InverseTransformDirection (move);
+			CheckGroundStatus ();
 
+			move = gravityRotation * move;
+			move = Vector3.ProjectOnPlane (move, m_GroundNormal);
 
-		move = transform.InverseTransformDirection (move);
-		CheckGroundStatus ();
+			float z = Vector3.Dot (move, gravityForward);
+			float x = Vector3.Dot (move, gravityRight);
 
-		move = rot * move;
-		move = Vector3.ProjectOnPlane (move, m_GroundNormal);
-
-		//move = transform.*move;
-		//Debug.Log ("MoveAft:" + move.ToString ("F4"));
-		//Debug.Log ("GroundNorm:" + m_GroundNormal.ToString ("F4"));
-
-		float z = Vector3.Dot (move, planetoidForward);
-		float x = Vector3.Dot (move, planetoidRight);
-			
-
-		//rot = Quaternion.FromToRotation (Vector3.down, gravityDirection);
-
-		//move = rot2*move;
-		m_TurnAmount = Mathf.Atan2 (x, z);
-		//m_ForwardAmount = Vector3.Dot(move,rot*Vector3.forward);
-		m_ForwardAmount = z;
-		//Debug.Log (move.ToString ("F4"));
-		//Debug.Log ("MF:" + m_ForwardAmount);
-
-		ApplyExtraTurnRotation ();
-
-		// control and velocity handling is different when grounded and airborne:
-		if (m_IsGrounded) {
-			HandleGroundedMovement (crouch, jump);
-		} else {
-			HandleAirborneMovement ();
-		}
-
-		ScaleCapsuleForCrouching (crouch);
-		PreventStandingInLowHeadroom ();
-
-		//move = rot*move;
-			
-			
-		#if UNITY_EDITOR
-		if (move.magnitude > 0) {
-			//Debug.Log ("f:" + m_ForwardAmount + ", t:" + m_TurnAmount);
-			//Debug.DrawLine(transform.position, transform.position + move * 2, Color.red);
-			//Debug.Log ("MoveBef:" + move.ToString ("F4"));
-			//Debug.DrawLine(transform.position, transform.position + move * 5, Color.blue);
-		}
-		#endif
-
-		//if (move.magnitude > 0) {
-				Vector3 zt = transform.TransformPoint(Vector3.forward);
-				Vector3 gt = transform.TransformPoint (planetoidForward);
-
-				//Debug.Log ("T:" +zt.ToString ("F4"));
-				//Debug.Log ("G:" +gt.ToString ("F4"));
-		//	}
+			m_TurnAmount = Mathf.Atan2 (x, z);
+			m_ForwardAmount = z;
 	
-			//transform.Rotate (Quaternion.FromToRotation (zt,gt).eulerAngles, Space.World);
-			//transform.rotation *= rot2;
+			ApplyExtraTurnRotation ();
 
+			// control and velocity handling is different when grounded and airborne:
+			if (m_IsGrounded) {
+				HandleGroundedMovement (crouch, jump);
+			} else {
+				HandleAirborneMovement ();
+			}
 
-			//}
-			// send input and other state parameters to the animator
+			ScaleCapsuleForCrouching (crouch);
+			PreventStandingInLowHeadroom ();
+
 			UpdateAnimator(move);
-			//transform.rotation = rot*rot2;
-			//if (m_TurnAmount > 0) {
-				//Debug.Log ("Rot2:" + rot2.ToString ("F4"));
-			//}
 		}
 
 
@@ -203,7 +113,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			}
 			else
 			{
-				Ray crouchRay = new Ray(m_Rigidbody.position + planetoidUp * m_Capsule.radius * k_Half, planetoidUp);
+				Ray crouchRay = new Ray(m_Rigidbody.position + gravityUp * m_Capsule.radius * k_Half, gravityUp);
 				float crouchRayLength = m_CapsuleHeight - m_Capsule.radius * k_Half;
 				if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, crouchRayLength))
 				{
@@ -221,7 +131,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			// prevent standing up in crouch-only zones
 			if (!m_Crouching)
 			{
-				Ray crouchRay = new Ray(m_Rigidbody.position + planetoidUp * m_Capsule.radius * k_Half, planetoidUp);
+				Ray crouchRay = new Ray(m_Rigidbody.position + gravityUp * m_Capsule.radius * k_Half, gravityUp);
 				float crouchRayLength = m_CapsuleHeight - m_Capsule.radius * k_Half;
 				if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, crouchRayLength))
 				{
@@ -285,9 +195,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			if (jump && !crouch && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
 			{
 				//Vector3 newVel = m_Rigidbody.velocity-planetoidVelocity.y*planetoidUp;
-				m_Rigidbody.velocity = planetoidVelocity.x*planetoidRight +
-						               m_JumpPower*planetoidUp +
-									   planetoidVelocity.z*planetoidForward;
+				m_Rigidbody.velocity = planetoidVelocity.x*gravityRight +
+						m_JumpPower*gravityUp +
+						planetoidVelocity.z*gravityForward;
 				// jump!
 				//m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_JumpPower, m_Rigidbody.velocity.z);
 				m_IsGrounded = false;
@@ -318,9 +228,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				Vector3 v = (m_Animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
 
 				// we preserve the existing y part of the current velocity.
-				float upSpeed = Vector3.Dot (v,planetoidUp);
+				float upSpeed = Vector3.Dot (v,gravityUp);
 				if(upSpeed > 0) {
-					v -= upSpeed*planetoidUp;
+					v -= upSpeed*gravityUp;
 				}
 				//v = m_Rigidbody.velocity.y;
 				m_Rigidbody.velocity = v;
@@ -331,36 +241,12 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		void CheckGroundStatus()
 		{
 			RaycastHit hitInfo;
-			//Vector3 newGravity = -transform.localPosition.normalized;
-			//if (newGravity.magnitude < 1) {
-			//Vector3	newGravity = Vector3.up;
-			//}
-			//Debug.Log (newGravity.ToString ("F4"));
-
-
-			//Debug.Log ("UP:" + Vector3.up.ToString ("F4"));
-			//Debug.Log ("DW:" + Vector3.down.ToString ("F4"));
-
-			//Vector3 planetoidUp = Vector3.up;
-			//Vector3 planetoidDown = Vector3.down;
-			//planetoidUp = -planetoidUp;
-			//planetoidDown = -planetoidDown;
-
-
 #if UNITY_EDITOR
-			//Vector3 test1 = transform.position + (planetoidUp * 0.1f);
-			//Vector3 test2 = transform.position + (planetoidUp * 0.1f) + (planetoidDown * m_GroundCheckDistance);
-			//Debug.Log ("1: " + test1.ToString ("F4"));
-			//Debug.Log ("2: " + test2.ToString ("F4"));
-
-
-			// helper to visualise the ground check ray in the scene view
 			//Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * m_GroundCheckDistance));
-			//Debug.DrawLine(transform.position + (planetoidUp * 0.1f), transform.position + (planetoidDown * m_GroundCheckDistance));
 #endif
 			// 0.1f is a small offset to start the ray from inside the character
 			// it is also good to note that the transform position in the sample assets is at the base of the character
-			if (Physics.Raycast(transform.position + (planetoidUp * 0.1f), planetoidDown, out hitInfo, m_GroundCheckDistance))
+			if (Physics.Raycast(transform.position + (gravityUp * 0.1f), gravityDown, out hitInfo, m_GroundCheckDistance))
 			{
 				//m_GroundNormal = rot*hitInfo.normal;
 				m_GroundNormal = hitInfo.normal;
