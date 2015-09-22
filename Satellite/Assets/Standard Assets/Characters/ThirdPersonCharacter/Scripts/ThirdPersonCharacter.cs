@@ -58,14 +58,31 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		void FixedUpdate() {
 
 			gravityDirection = -transform.localPosition.normalized;
+			//gravityDirection = transform.position - GetComponentInParent<Transform> ().position;
+			//gravityDirection = gravityDirection.normalized;
+
+			#if UNITY_EDITOR
+			//Debug.DrawLine(transform.position, transform.position - gravityDirection, Color.red);
+			//Debug.Log ("T:" + transform.position.ToString ("F4"));
+			//Debug.Log ("D:" + transform.TransformDirection(Vector3.down).ToString ("F4"));
+			//Debug.Log ("G:" + gravityDirection.ToString ("F4"));
+			//Debug.DrawLine(transform.position, transform.position + move * 5, Color.blue);
+			#endif
+
+
 			rot  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
+
+
+			Debug.Log("R:" + rot.eulerAngles.ToString ("F4"));
 
 
 			Quaternion rot3 = Quaternion.Inverse (transform.rotation)*rot;
 			//Vector3 angles = rot.eulerAngles - transform.rotation.eulerAngles;
 
+
+			transform.Rotate (Quaternion.FromToRotation(transform.TransformDirection(Vector3.down), gravityDirection).eulerAngles, Space.World);
 			//Debug.Log ("A:" + angles.ToString ("F4"));
-			transform.Rotate (rot3.eulerAngles, Space.World);
+			//transform.Rotate (rot3.eulerAngles, Space.World);
 
 
 			//transform.rotation = rot;
@@ -157,8 +174,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				Vector3 zt = transform.TransformPoint(Vector3.forward);
 				Vector3 gt = transform.TransformPoint (planetoidForward);
 
-				Debug.Log ("T:" +zt.ToString ("F4"));
-				Debug.Log ("G:" +gt.ToString ("F4"));
+				//Debug.Log ("T:" +zt.ToString ("F4"));
+				//Debug.Log ("G:" +gt.ToString ("F4"));
 		//	}
 	
 			//transform.Rotate (Quaternion.FromToRotation (zt,gt).eulerAngles, Space.World);
@@ -339,7 +356,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
 			// helper to visualise the ground check ray in the scene view
 			//Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * m_GroundCheckDistance));
-			Debug.DrawLine(transform.position + (planetoidUp * 0.1f), transform.position + (planetoidDown * m_GroundCheckDistance));
+			//Debug.DrawLine(transform.position + (planetoidUp * 0.1f), transform.position + (planetoidDown * m_GroundCheckDistance));
 #endif
 			// 0.1f is a small offset to start the ray from inside the character
 			// it is also good to note that the transform position in the sample assets is at the base of the character
