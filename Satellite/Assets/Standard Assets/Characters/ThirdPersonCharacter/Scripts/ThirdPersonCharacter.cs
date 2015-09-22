@@ -28,10 +28,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		Vector3 m_CapsuleCenter;
 		CapsuleCollider m_Capsule;
 		bool m_Crouching;
-		//Vector3 gravityDirection = new Vector3(-1,0,0);
+
 		Vector3 gravityDirection;
 		Quaternion gravityRotation;
-
 		Vector3 gravityUp;
 		Vector3 gravityDown;
 		Vector3 gravityForward;
@@ -65,8 +64,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			planetoidVelocity.x = Vector3.Dot (m_Rigidbody.velocity,gravityRight);
 			planetoidVelocity.y = Vector3.Dot (m_Rigidbody.velocity,gravityForward);
 			planetoidVelocity.z = Vector3.Dot (m_Rigidbody.velocity,gravityUp);
+			m_Rigidbody.AddForce(gravityDirection*9.81f, ForceMode.Acceleration);
 
-			Physics.gravity = gravityDirection*9.81f;
+			Debug.Log ("Dist:" + m_GroundCheckDistance);
+
 		}
 
 		public void Move(Vector3 move, bool crouch, bool jump)
@@ -182,9 +183,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		void HandleAirborneMovement()
 		{
 			// apply extra gravity from multiplier:
-			Vector3 extraGravityForce = (gravityDirection * m_GravityMultiplier) - gravityDirection;
-			m_Rigidbody.AddForce(extraGravityForce);
-
+			//Vector3 extraGravityForce = (gravityDirection * m_GravityMultiplier) - gravityDirection;
+			//m_Rigidbody.AddForce(extraGravityForce);
+			//Debug.Log (planetoidVelocity.y);
 			m_GroundCheckDistance = planetoidVelocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
 		}
 
@@ -211,11 +212,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			// help the character turn faster (this is in addition to root rotation in the animation)
 			float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
 			transform.Rotate(0, m_TurnAmount * turnSpeed * Time.deltaTime, 0);
-			//Debug.Log ("turnSpeed:" + (m_TurnAmount * turnSpeed * Time.deltaTime));
-			//transform.RotateAround (transform.position, planetoidUp, m_TurnAmount * turnSpeed * Time.deltaTime);
-			//transform.localRotation = Quaternion.FromToRotation(
-			//rot2 = Quaternion.AngleAxis(m_TurnAmount * turnSpeed * Time.deltaTime, planetoidDown);
-			//transform.Rotate (Vector3(0,
 		}
 
 
