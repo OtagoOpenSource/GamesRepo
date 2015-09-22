@@ -51,14 +51,32 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			m_OrigGroundCheckDistance = m_GroundCheckDistance;
 
 			gravityDirection = -transform.localPosition.normalized;
-			rot  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
-			transform.rotation = rot;
+			//rot  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
+			//transform.rotation = rot;
 		}
 
 		void FixedUpdate() {
 
 			gravityDirection = -transform.localPosition.normalized;
 			rot  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
+
+
+			Quaternion rot3 = Quaternion.Inverse (transform.rotation)*rot;
+			//Vector3 angles = rot.eulerAngles - transform.rotation.eulerAngles;
+
+			//Debug.Log ("A:" + angles.ToString ("F4"));
+			transform.Rotate (rot3.eulerAngles, Space.World);
+
+
+			//transform.rotation = rot;
+			//rot2 = new Quaternion (0f, 0f, 0f, 1f);
+
+			//Debug.Log ("G:" + gravityDirection.ToString("F4"));
+			//Debug.Log ("D:" + Vector3.down.ToString("F4"));
+			//Debug.Log ("R:" + rot.eulerAngles.ToString ("F4"));
+			//transform//trans
+
+
 			//transform.rotation = rot;
 			//transform.Rotate (rot.eulerAngles,Space.World);
 			planetoidUp = -gravityDirection;
@@ -79,70 +97,80 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
 		public void Move(Vector3 move, bool crouch, bool jump)
 		{
-			//Vector3 newGravity = -transform.localPosition.normalized;
-			// convert the world relative moveInput vector into a local-relative
-			// turn amount and forward amount required to head in the desired
-			// direction.
-			if (move.magnitude > 1f) move.Normalize();
+		//Vector3 newGravity = -transform.localPosition.normalized;
+		// convert the world relative moveInput vector into a local-relative
+		// turn amount and forward amount required to head in the desired
+		// direction.
+		if (move.magnitude > 1f)
+			move.Normalize ();
 
 
 
-			move = transform.InverseTransformDirection(move);
-			CheckGroundStatus();
+		move = transform.InverseTransformDirection (move);
+		CheckGroundStatus ();
 
-			move = rot*move;
-			move = Vector3.ProjectOnPlane(move, m_GroundNormal);
+		move = rot * move;
+		move = Vector3.ProjectOnPlane (move, m_GroundNormal);
 
-			//move = transform.*move;
-				//Debug.Log ("MoveAft:" + move.ToString ("F4"));
-				//Debug.Log ("GroundNorm:" + m_GroundNormal.ToString ("F4"));
+		//move = transform.*move;
+		//Debug.Log ("MoveAft:" + move.ToString ("F4"));
+		//Debug.Log ("GroundNorm:" + m_GroundNormal.ToString ("F4"));
 
-			float z = Vector3.Dot (move, planetoidForward);
-			float x = Vector3.Dot (move, planetoidRight);
+		float z = Vector3.Dot (move, planetoidForward);
+		float x = Vector3.Dot (move, planetoidRight);
 			
 
-			//rot = Quaternion.FromToRotation (Vector3.down, gravityDirection);
+		//rot = Quaternion.FromToRotation (Vector3.down, gravityDirection);
 
-			//move = rot2*move;
-			m_TurnAmount = Mathf.Atan2(x, z);
-			//m_ForwardAmount = Vector3.Dot(move,rot*Vector3.forward);
-			m_ForwardAmount = z;
-			//Debug.Log (move.ToString ("F4"));
-			//Debug.Log ("MF:" + m_ForwardAmount);
+		//move = rot2*move;
+		m_TurnAmount = Mathf.Atan2 (x, z);
+		//m_ForwardAmount = Vector3.Dot(move,rot*Vector3.forward);
+		m_ForwardAmount = z;
+		//Debug.Log (move.ToString ("F4"));
+		//Debug.Log ("MF:" + m_ForwardAmount);
 
-			ApplyExtraTurnRotation();
+		ApplyExtraTurnRotation ();
 
-			// control and velocity handling is different when grounded and airborne:
-			if (m_IsGrounded)
-			{
-				HandleGroundedMovement(crouch, jump);
-			}
-			else
-			{
-				HandleAirborneMovement();
-			}
+		// control and velocity handling is different when grounded and airborne:
+		if (m_IsGrounded) {
+			HandleGroundedMovement (crouch, jump);
+		} else {
+			HandleAirborneMovement ();
+		}
 
-			ScaleCapsuleForCrouching(crouch);
-			PreventStandingInLowHeadroom();
+		ScaleCapsuleForCrouching (crouch);
+		PreventStandingInLowHeadroom ();
 
-			//move = rot*move;
+		//move = rot*move;
 			
 			
-			#if UNITY_EDITOR
-			if (move.magnitude > 0) {
-				//Debug.Log ("f:" + m_ForwardAmount + ", t:" + m_TurnAmount);
-				//Debug.DrawLine(transform.position, transform.position + move * 2, Color.red);
-				//Debug.Log ("MoveBef:" + move.ToString ("F4"));
-				//Debug.DrawLine(transform.position, transform.position + move * 5, Color.blue);
-			}
-			#endif
+		#if UNITY_EDITOR
+		if (move.magnitude > 0) {
+			//Debug.Log ("f:" + m_ForwardAmount + ", t:" + m_TurnAmount);
+			//Debug.DrawLine(transform.position, transform.position + move * 2, Color.red);
+			//Debug.Log ("MoveBef:" + move.ToString ("F4"));
+			//Debug.DrawLine(transform.position, transform.position + move * 5, Color.blue);
+		}
+		#endif
+
+		//if (move.magnitude > 0) {
+				Vector3 zt = transform.TransformPoint(Vector3.forward);
+				Vector3 gt = transform.TransformPoint (planetoidForward);
+
+				Debug.Log ("T:" +zt.ToString ("F4"));
+				Debug.Log ("G:" +gt.ToString ("F4"));
+		//	}
+	
+			//transform.Rotate (Quaternion.FromToRotation (zt,gt).eulerAngles, Space.World);
+			//transform.rotation *= rot2;
 
 
+			//}
 			// send input and other state parameters to the animator
 			UpdateAnimator(move);
-			transform.rotation = rot*rot2;
+			//transform.rotation = rot*rot2;
 			//if (m_TurnAmount > 0) {
-				Debug.Log ("Rot2:" + rot2.ToString ("F4"));
+				//Debug.Log ("Rot2:" + rot2.ToString ("F4"));
 			//}
 		}
 
@@ -255,12 +283,12 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		{
 			// help the character turn faster (this is in addition to root rotation in the animation)
 			float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
-			//transform.Rotate(0, m_TurnAmount * turnSpeed * Time.deltaTime, 0);
+			transform.Rotate(0, m_TurnAmount * turnSpeed * Time.deltaTime, 0);
 			//Debug.Log ("turnSpeed:" + (m_TurnAmount * turnSpeed * Time.deltaTime));
 			//transform.RotateAround (transform.position, planetoidUp, m_TurnAmount * turnSpeed * Time.deltaTime);
 			//transform.localRotation = Quaternion.FromToRotation(
-			rot2 = Quaternion.AngleAxis(m_TurnAmount * turnSpeed * Time.deltaTime, planetoidDown);
-
+			//rot2 = Quaternion.AngleAxis(m_TurnAmount * turnSpeed * Time.deltaTime, planetoidDown);
+			//transform.Rotate (Vector3(0,
 		}
 
 
