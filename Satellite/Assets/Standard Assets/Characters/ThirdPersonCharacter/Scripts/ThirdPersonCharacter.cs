@@ -62,12 +62,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			gravityRight = (gravityRotation * Vector3.right).normalized;
 
 			planetoidVelocity.x = Vector3.Dot (m_Rigidbody.velocity,gravityRight);
-			planetoidVelocity.y = Vector3.Dot (m_Rigidbody.velocity,gravityForward);
-			planetoidVelocity.z = Vector3.Dot (m_Rigidbody.velocity,gravityUp);
+			planetoidVelocity.y = Vector3.Dot (m_Rigidbody.velocity,gravityUp);
+			planetoidVelocity.z = Vector3.Dot (m_Rigidbody.velocity,gravityForward);
 			m_Rigidbody.AddForce(gravityDirection*9.81f, ForceMode.Acceleration);
-
-			Debug.Log ("Dist:" + m_GroundCheckDistance);
-
 		}
 
 		public void Move(Vector3 move, bool crouch, bool jump)
@@ -183,9 +180,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		void HandleAirborneMovement()
 		{
 			// apply extra gravity from multiplier:
-			//Vector3 extraGravityForce = (gravityDirection * m_GravityMultiplier) - gravityDirection;
-			//m_Rigidbody.AddForce(extraGravityForce);
-			//Debug.Log (planetoidVelocity.y);
+			Vector3 extraGravityForce = (gravityDirection * m_GravityMultiplier) - gravityDirection;
+			m_Rigidbody.AddForce(extraGravityForce, ForceMode.Acceleration);
 			m_GroundCheckDistance = planetoidVelocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
 		}
 
@@ -238,7 +234,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		{
 			RaycastHit hitInfo;
 #if UNITY_EDITOR
-			//Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * m_GroundCheckDistance));
+			Debug.DrawLine(transform.position + (gravityUp * 0.1f), transform.position + (gravityUp * 0.1f) + (gravityDown * m_GroundCheckDistance),Color.red);
 #endif
 			// 0.1f is a small offset to start the ray from inside the character
 			// it is also good to note that the transform position in the sample assets is at the base of the character
