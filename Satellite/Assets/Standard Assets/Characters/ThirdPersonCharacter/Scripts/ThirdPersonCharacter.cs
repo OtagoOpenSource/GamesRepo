@@ -37,6 +37,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		Vector3 gravityRight;
 		Vector3 planetoidVelocity;
 
+		Transform p_Transform;
+
+
 		void Start()
 		{
 			m_Animator = GetComponent<Animator>();
@@ -46,15 +49,24 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			m_CapsuleCenter = m_Capsule.center;
 			//m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 			m_OrigGroundCheckDistance = m_GroundCheckDistance;
+
+			p_Transform = GetComponentInParent<Transform> ();
 		}
 
 		void FixedUpdate() {
 
-			gravityDirection = -transform.localPosition.normalized;
+			gravityDirection = (transform.parent.position-transform.position).normalized;
 			gravityRotation  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
 
+			Debug.Log ("G:" + gravityDirection.ToString ("F4"));
+			Debug.Log ("R:" + gravityRotation.ToString ("F4"));
+
 			Vector3 characterDownWorld = transform.TransformDirection (Vector3.down);
-			transform.Rotate (Quaternion.FromToRotation(characterDownWorld, gravityDirection).eulerAngles, Space.World);
+			Vector3  characterRotate = Quaternion.FromToRotation (characterDownWorld, gravityDirection).eulerAngles;
+			transform.Rotate (characterRotate, Space.World);
+
+			Debug.Log ("A:" + characterRotate.ToString ("F4"));
+
 
 			gravityUp = -gravityDirection;
 			gravityDown = gravityDirection;
@@ -181,7 +193,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		{
 			// apply extra gravity from multiplier:
 			Vector3 extraGravityForce = (gravityDirection * m_GravityMultiplier) - gravityDirection;
-			m_Rigidbody.AddForce(extraGravityForce, ForceMode.Acceleration);
+			//m_Rigidbody.AddForce(extraGravityForce, ForceMode.Acceleration);
 			m_GroundCheckDistance = planetoidVelocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
 		}
 
@@ -196,7 +208,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 						m_JumpPower*gravityUp +
 						planetoidVelocity.z*gravityForward;
 				// jump!
-				//m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_JumpPower, m_Rigidbody.velocity.z);
 				m_IsGrounded = false;
 				m_Animator.applyRootMotion = false;
 				m_GroundCheckDistance = 0.1f;
@@ -224,7 +235,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				if(upSpeed > 0) {
 					v -= upSpeed*gravityUp;
 				}
-				//v = m_Rigidbody.velocity.y;
 				m_Rigidbody.velocity = v;
 			}
 		}
