@@ -53,7 +53,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			p_Transform = GetComponentInParent<Transform> ();
 		}
 
-		void FixedUpdate() {
+		void Update() {
 
 			gravityDirection = (transform.parent.position-transform.position).normalized;
 			gravityRotation  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
