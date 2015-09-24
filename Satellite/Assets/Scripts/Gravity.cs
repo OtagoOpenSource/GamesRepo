@@ -6,12 +6,11 @@ using System.Collections;
 
 public class Gravity : MonoBehaviour {
 
-	const float G = 1f;
+	const float G = 0.01f;
 
 	Rigidbody m_Rigidbody;
 
 	Rigidbody p_Rigidbody;
-	Transform p_Transform;
 
 	public Vector3 initialVelocity = new Vector3(0f,0f,0f);
 
@@ -19,18 +18,25 @@ public class Gravity : MonoBehaviour {
 	void Start () {
 		m_Rigidbody = GetComponent<Rigidbody>();
 
-		p_Rigidbody = GetComponentInParent<Rigidbody> ();
-		p_Transform = GetComponentInParent<Transform> ();
+		p_Rigidbody = transform.parent.GetComponent<Rigidbody> ();
 
 		//initialVelocity is taken to be relative to parent
-		m_Rigidbody.velocity = p_Transform.TransformVector (initialVelocity);
+		//m_Rigidbody.velocity = transform.parent.TransformVector (initialVelocity);
 
+		Component[] bodies = GetComponentsInChildren<Rigidbody> ();
+		foreach (Rigidbody body in bodies) {
+			body.velocity += transform.parent.TransformDirection (initialVelocity);
+		}
 
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		float denom = transform.localPosition.magnitude;
+		Vector3 r = transform.parent.position-transform.position;
+			
+		Vector3 g = r.normalized * (G * p_Rigidbody.mass / r.sqrMagnitude);
+
+		//m_Rigidbody.AddForce(g, ForceMode.Acceleration);
 		//float magAcc = G * mass / (denom * denom);
 
 

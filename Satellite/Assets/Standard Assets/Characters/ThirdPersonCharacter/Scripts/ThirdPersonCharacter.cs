@@ -58,15 +58,9 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			gravityDirection = (transform.parent.position-transform.position).normalized;
 			gravityRotation  = Quaternion.FromToRotation (Vector3.down, gravityDirection);
 
-			Debug.Log ("G:" + gravityDirection.ToString ("F4"));
-			Debug.Log ("R:" + gravityRotation.ToString ("F4"));
-
 			Vector3 characterDownWorld = transform.TransformDirection (Vector3.down);
 			Vector3  characterRotate = Quaternion.FromToRotation (characterDownWorld, gravityDirection).eulerAngles;
 			transform.Rotate (characterRotate, Space.World);
-
-			Debug.Log ("A:" + characterRotate.ToString ("F4"));
-
 
 			gravityUp = -gravityDirection;
 			gravityDown = gravityDirection;

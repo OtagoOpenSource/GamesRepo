@@ -598,7 +598,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!1001 &1270752341
 Prefab:
@@ -740,7 +740,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1774999246}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: .707106829, z: 0, w: .707106709}
   m_LocalPosition: {x: -1, y: 0, z: 1}
   m_LocalScale: {x: .200000003, y: .200000003, z: .200000003}
   m_Children: []
@@ -796,7 +796,7 @@ Rigidbody:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1774999246}
   serializedVersion: 2
-  m_Mass: 100
+  m_Mass: 5000
   m_Drag: 0
   m_AngularDrag: .0500000007
   m_UseGravity: 0
