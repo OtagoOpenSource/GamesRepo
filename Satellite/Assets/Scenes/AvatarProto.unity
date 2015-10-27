@@ -98,6 +98,7 @@ GameObject:
   - 23: {fileID: 472203937}
   - 54: {fileID: 472203936}
   - 114: {fileID: 472203935}
+  - 114: {fileID: 472203940}
   m_Layer: 0
   m_Name: Planet2
   m_TagString: Untagged
@@ -154,7 +155,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: 1712a900d696c4ec9b10672f83e1324f, type: 2}
+  - {fileID: 2100000, guid: a13bea595452f426887cc043e6c20cdc, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -187,6 +188,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 472203933}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &472203940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 472203933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6dd59a66616d4132ab9e27c2326e9a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 0, b: 0, a: 0}
 --- !u!1 &481201335
 GameObject:
   m_ObjectHideFlags: 0
@@ -346,6 +359,7 @@ GameObject:
   - 23: {fileID: 1212815020}
   - 54: {fileID: 1212815024}
   - 114: {fileID: 1212815025}
+  - 114: {fileID: 1212815026}
   m_Layer: 0
   m_Name: Planet1
   m_TagString: Untagged
@@ -437,6 +451,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialVelocity: {x: 0, y: 0, z: .699999988}
+--- !u!114 &1212815026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1212815019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6dd59a66616d4132ab9e27c2326e9a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: .0780168474, g: .174741134, b: .816176474, a: 0}
 --- !u!1 &1223540297
 GameObject:
   m_ObjectHideFlags: 0
@@ -449,6 +475,7 @@ GameObject:
   - 135: {fileID: 1223540301}
   - 23: {fileID: 1223540300}
   - 54: {fileID: 1223540299}
+  - 114: {fileID: 1223540303}
   m_Layer: 0
   m_Name: Sun
   m_TagString: Untagged
@@ -495,7 +522,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: 4c3b9bc391445429a9711f0cfdfe6fcb, type: 2}
+  - {fileID: 2100000, guid: a13bea595452f426887cc043e6c20cdc, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -528,6 +555,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1223540297}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1223540303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1223540297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6dd59a66616d4132ab9e27c2326e9a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: .886379957, g: 1, b: 0, a: 0}
 --- !u!1001 &1270752341
 Prefab:
   m_ObjectHideFlags: 0
@@ -655,6 +694,7 @@ GameObject:
   - 23: {fileID: 1774999248}
   - 54: {fileID: 1774999251}
   - 114: {fileID: 1774999252}
+  - 114: {fileID: 1774999253}
   m_Layer: 0
   m_Name: Moon
   m_TagString: Untagged
@@ -684,7 +724,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: fdd4d88897e7e4abfaec69bc33ba810c, type: 2}
+  - {fileID: 2100000, guid: a13bea595452f426887cc043e6c20cdc, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -744,3 +784,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialVelocity: {x: 3, y: 0, z: 0}
+--- !u!114 &1774999253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1774999246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6dd59a66616d4132ab9e27c2326e9a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: .529411793, g: .544982731, b: .544982731, a: 0}
